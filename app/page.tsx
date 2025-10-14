@@ -826,7 +826,7 @@ export default function HomePage() {
                 placeholder="Enter your email"
                 className="flex-1 px-6 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white"
               />
-              <Button className="bg-white text-black hover:bg-gray-100 px-8 font-medium uppercase tracking-wider">
+              <Button className="bg-white text-black hover:bg-gray-100 px-6 font-medium uppercase tracking-wider">
                 Subscribe
               </Button>
             </div>

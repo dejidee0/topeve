@@ -1,8 +1,9 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { AnnouncementBar } from "@/components/announcement-bar";
-import { SiteHeader } from "@/components/site-header";
+
 import { SiteFooter } from "@/components/site-footer";
+import SiteHeader from "@/components/site-header";
 
 export const metadata: Metadata = {
   title: "TopeveCreation — Premium African Fashion & Lifestyle",
