@@ -820,7 +820,7 @@ export default function HomePage() {
               Subscribe to our newsletter for exclusive offers, new arrivals,
               and style inspiration
             </p>
-            <div className="flex gap-3 max-w-md mx-auto">
+            <div className="flex flex-col md:flex-row gap-3 max-w-md mx-auto">
               <input
                 type="email"
                 placeholder="Enter your email"
