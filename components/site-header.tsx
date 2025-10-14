@@ -5,79 +5,23 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, User, ShoppingBag, Menu, X, ChevronDown } from "lucide-react";
-import { useAuth, useCart } from "@/store";
 import { Button } from "@/components/ui/button";
 
-interface NavItem {
-  name: string;
-  href: string;
-  hasMegaMenu?: boolean;
-  highlight?: boolean;
-}
-
-interface MegaMenuItem {
-  name: string;
-  href: string;
-}
-
-interface MegaMenuSection {
-  title: string;
-  items: MegaMenuItem[];
-}
-
-interface MegaMenuContent {
-  sections: MegaMenuSection[];
-}
-
-const megaMenuItems: Record<string, MegaMenuContent> = {
-  "Ready to Wear": {
-    sections: [
-      {
-        title: "Women's Collection",
-        items: [
-          { name: "Dresses", href: "/shop?category=dresses" },
-          { name: "Two Piece Sets", href: "/shop?category=two-piece" },
-          { name: "Tops & Blouses", href: "/shop?category=tops" },
-          { name: "Bottoms", href: "/shop?category=bottoms" },
-          { name: "Jumpsuits", href: "/shop?category=jumpsuits" },
-        ],
-      },
-      {
-        title: "Men's Collection",
-        items: [
-          { name: "Agbadas", href: "/shop?category=agbadas" },
-          { name: "Shirts", href: "/shop?category=mens-shirts" },
-          { name: "Trousers", href: "/shop?category=mens-trousers" },
-        ],
-      },
-      {
-        title: "Special Occasions",
-        items: [
-          { name: "Bridal Shower", href: "/ready-to-wear/bridal-shower" },
-          { name: "Traditional Wear", href: "/shop?category=traditional" },
-          { name: "Kids Collection", href: "/ready-to-wear/kids" },
-        ],
-      },
-    ],
-  },
-};
-
-export function SiteHeader(): JSX.Element {
+export default function SiteHeader() {
   const pathname = usePathname();
-  const { isAuthenticated } = useAuth();
-  const { getTotalItems } = useCart();
-  const [isScrolled, setIsScrolled] = useState<boolean>(false);
-  const [searchOpen, setSearchOpen] = useState<boolean>(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
-  const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const cartItemsCount = getTotalItems();
+  // 🔒 Hardcoded replacements for useAuth() and useCart()
+  const isAuthenticated = true; // change to false to simulate logged out user
+  const cartItemsCount = 3; // hardcoded cart item count
+
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeMegaMenu, setActiveMegaMenu] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    const handleScroll = (): void => {
-      setIsScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -88,17 +32,11 @@ export function SiteHeader(): JSX.Element {
   }, [pathname]);
 
   useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-    return () => {
-      document.body.style.overflow = "unset";
-    };
+    document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
+    return () => (document.body.style.overflow = "unset");
   }, [mobileMenuOpen]);
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>): void => {
+  const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       window.location.href = `/shop?search=${encodeURIComponent(searchQuery)}`;
@@ -107,7 +45,7 @@ export function SiteHeader(): JSX.Element {
     }
   };
 
-  const mainNavItems: NavItem[] = [
+  const mainNavItems = [
     { name: "New Arrivals", href: "/shop?sort=newest" },
     { name: "Ready to Wear", href: "#", hasMegaMenu: true },
     { name: "Beauty & Hair", href: "/beauty-hair" },
@@ -117,12 +55,40 @@ export function SiteHeader(): JSX.Element {
     { name: "Sale", href: "/sale", highlight: true },
   ];
 
-  const popularSearchTerms: string[] = [
-    "Ankara",
-    "Dresses",
-    "Agbada",
-    "Wedding",
-  ];
+  const popularSearchTerms = ["Ankara", "Dresses", "Agbada", "Wedding"];
+
+  const megaMenuItems = {
+    "Ready to Wear": {
+      sections: [
+        {
+          title: "Women's Collection",
+          items: [
+            { name: "Dresses", href: "/shop?category=dresses" },
+            { name: "Two Piece Sets", href: "/shop?category=two-piece" },
+            { name: "Tops & Blouses", href: "/shop?category=tops" },
+            { name: "Bottoms", href: "/shop?category=bottoms" },
+            { name: "Jumpsuits", href: "/shop?category=jumpsuits" },
+          ],
+        },
+        {
+          title: "Men's Collection",
+          items: [
+            { name: "Agbadas", href: "/shop?category=agbadas" },
+            { name: "Shirts", href: "/shop?category=mens-shirts" },
+            { name: "Trousers", href: "/shop?category=mens-trousers" },
+          ],
+        },
+        {
+          title: "Special Occasions",
+          items: [
+            { name: "Bridal Shower", href: "/ready-to-wear/bridal-shower" },
+            { name: "Traditional Wear", href: "/shop?category=traditional" },
+            { name: "Kids Collection", href: "/ready-to-wear/kids" },
+          ],
+        },
+      ],
+    },
+  };
 
   return (
     <>
@@ -136,7 +102,7 @@ export function SiteHeader(): JSX.Element {
             : "bg-white border-b border-gray-200"
         }`}
       >
-        {/* Top Bar - Desktop Only */}
+        {/* Top Bar */}
         <div className="hidden lg:block bg-black text-white py-2">
           <div className="container">
             <div className="flex items-center justify-between text-xs uppercase tracking-wider">
@@ -146,17 +112,11 @@ export function SiteHeader(): JSX.Element {
                 <span>Premium African Fashion</span>
               </div>
               <div className="flex items-center gap-6">
-                <Link
-                  href="/track-order"
-                  className="hover:text-gray-300 transition-colors"
-                >
+                <Link href="/track-order" className="hover:text-gray-300">
                   Track Order
                 </Link>
                 <span className="text-gray-400">|</span>
-                <Link
-                  href="/help"
-                  className="hover:text-gray-300 transition-colors"
-                >
+                <Link href="/help" className="hover:text-gray-300">
                   Help
                 </Link>
               </div>
@@ -167,11 +127,10 @@ export function SiteHeader(): JSX.Element {
         {/* Main Header */}
         <div className="container">
           <div className="flex items-center justify-between h-16 lg:h-20">
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              aria-label="Toggle menu"
+              className="lg:hidden p-2 hover:bg-gray-100 rounded-lg"
             >
               <AnimatePresence mode="wait">
                 {mobileMenuOpen ? (
@@ -180,7 +139,6 @@ export function SiteHeader(): JSX.Element {
                     initial={{ rotate: -90, opacity: 0 }}
                     animate={{ rotate: 0, opacity: 1 }}
                     exit={{ rotate: 90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
                   >
                     <X className="h-6 w-6" />
                   </motion.div>
@@ -190,7 +148,6 @@ export function SiteHeader(): JSX.Element {
                     initial={{ rotate: 90, opacity: 0 }}
                     animate={{ rotate: 0, opacity: 1 }}
                     exit={{ rotate: -90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
                   >
                     <Menu className="h-6 w-6" />
                   </motion.div>
@@ -201,12 +158,12 @@ export function SiteHeader(): JSX.Element {
             {/* Logo */}
             <Link
               href="/"
-              className="font-['Playfair_Display'] text-2xl lg:text-3xl font-bold tracking-tight hover:opacity-80 transition-opacity"
+              className="font-['Playfair_Display'] text-2xl lg:text-3xl font-bold tracking-tight hover:opacity-80"
             >
               TopeveCreation
             </Link>
 
-            {/* Desktop Navigation */}
+            {/* Desktop Nav */}
             <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
               {mainNavItems.map((item) => (
                 <div
@@ -218,13 +175,7 @@ export function SiteHeader(): JSX.Element {
                   onMouseLeave={() => setActiveMegaMenu(null)}
                 >
                   {item.hasMegaMenu ? (
-                    <button
-                      className={`text-sm font-medium uppercase tracking-wider transition-colors flex items-center gap-1 ${
-                        item.highlight
-                          ? "text-red-600 hover:text-red-700"
-                          : "hover:text-gray-600"
-                      }`}
-                    >
+                    <button className="flex items-center gap-1 text-sm font-medium uppercase hover:text-gray-600">
                       {item.name}
                       <ChevronDown className="h-3 w-3" />
                     </button>
@@ -244,28 +195,25 @@ export function SiteHeader(): JSX.Element {
               ))}
             </nav>
 
-            {/* Right Actions */}
+            {/* Actions */}
             <div className="flex items-center gap-3 lg:gap-4">
               <button
                 onClick={() => setSearchOpen(!searchOpen)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                aria-label="Search"
+                className="p-2 hover:bg-gray-100 rounded-lg"
               >
                 <Search className="h-5 w-5" />
               </button>
 
               <Link
                 href={isAuthenticated ? "/account" : "/sign-in"}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                aria-label="Account"
+                className="p-2 hover:bg-gray-100 rounded-lg"
               >
                 <User className="h-5 w-5" />
               </Link>
 
               <Link
                 href="/cart"
-                className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                aria-label="Cart"
+                className="relative p-2 hover:bg-gray-100 rounded-lg"
               >
                 <ShoppingBag className="h-5 w-5" />
                 <AnimatePresence>
@@ -274,7 +222,7 @@ export function SiteHeader(): JSX.Element {
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
                       exit={{ scale: 0 }}
-                      className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium"
+                      className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
                     >
                       {cartItemsCount}
                     </motion.span>
@@ -285,7 +233,7 @@ export function SiteHeader(): JSX.Element {
           </div>
         </div>
 
-        {/* Mega Menu - Desktop */}
+        {/* Mega Menu */}
         <AnimatePresence>
           {activeMegaMenu === "Ready to Wear" && (
             <motion.div
@@ -297,34 +245,32 @@ export function SiteHeader(): JSX.Element {
               onMouseEnter={() => setActiveMegaMenu("Ready to Wear")}
               onMouseLeave={() => setActiveMegaMenu(null)}
             >
-              <div className="container py-12">
-                <div className="grid grid-cols-3 gap-12">
-                  {megaMenuItems["Ready to Wear"].sections.map((section) => (
-                    <div key={section.title}>
-                      <h3 className="font-['Playfair_Display'] text-lg font-bold mb-4 pb-2 border-b border-gray-200">
-                        {section.title}
-                      </h3>
-                      <ul className="space-y-3">
-                        {section.items.map((item) => (
-                          <li key={item.name}>
-                            <Link
-                              href={item.href}
-                              className="text-gray-600 hover:text-black transition-colors text-sm"
-                            >
-                              {item.name}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
+              <div className="container py-12 grid grid-cols-3 gap-12">
+                {megaMenuItems["Ready to Wear"].sections.map((section) => (
+                  <div key={section.title}>
+                    <h3 className="font-['Playfair_Display'] text-lg font-bold mb-4 border-b pb-2 border-gray-200">
+                      {section.title}
+                    </h3>
+                    <ul className="space-y-3">
+                      {section.items.map((item) => (
+                        <li key={item.name}>
+                          <Link
+                            href={item.href}
+                            className="text-gray-600 hover:text-black text-sm"
+                          >
+                            {item.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Search Bar */}
+        {/* Search */}
         <AnimatePresence>
           {searchOpen && (
             <motion.div
@@ -332,7 +278,7 @@ export function SiteHeader(): JSX.Element {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="border-t border-gray-200 bg-white overflow-hidden"
+              className="border-t border-gray-200 bg-white"
             >
               <div className="container py-6">
                 <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
@@ -340,16 +286,14 @@ export function SiteHeader(): JSX.Element {
                     <input
                       type="search"
                       value={searchQuery}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setSearchQuery(e.target.value)
-                      }
-                      placeholder="Search for products, categories, or brands..."
-                      className="w-full px-6 py-4 pr-12 border-2 border-gray-300 rounded-full focus:outline-none focus:border-black transition-colors text-base"
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder="Search for products..."
+                      className="w-full px-6 py-4 pr-12 border-2 border-gray-300 rounded-full focus:outline-none"
                       autoFocus
                     />
                     <button
                       type="submit"
-                      className="absolute right-2 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-100 rounded-full transition-colors"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-2 hover:bg-gray-100 rounded-full"
                     >
                       <Search className="h-5 w-5" />
                     </button>
@@ -360,13 +304,12 @@ export function SiteHeader(): JSX.Element {
                       <button
                         key={term}
                         type="button"
-                        onClick={() => {
-                          setSearchQuery(term);
-                          window.location.href = `/shop?search=${encodeURIComponent(
+                        onClick={() =>
+                          (window.location.href = `/shop?search=${encodeURIComponent(
                             term
-                          )}`;
-                        }}
-                        className="text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                          )}`)
+                        }
+                        className="text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full"
                       >
                         {term}
                       </button>
@@ -379,168 +322,7 @@ export function SiteHeader(): JSX.Element {
         </AnimatePresence>
       </motion.header>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-              onClick={() => setMobileMenuOpen(false)}
-            />
-            <motion.div
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="fixed top-0 left-0 bottom-0 w-[85vw] max-w-sm bg-white z-50 overflow-y-auto lg:hidden shadow-2xl"
-            >
-              <div className="p-6 border-b border-gray-200">
-                <div className="flex items-center justify-between mb-6">
-                  <span className="font-['Playfair_Display'] text-2xl font-bold">
-                    Menu
-                  </span>
-                  <button
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                  >
-                    <X className="h-6 w-6" />
-                  </button>
-                </div>
-                {!isAuthenticated ? (
-                  <div className="space-y-2">
-                    <Link
-                      href="/sign-in"
-                      className="w-full"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <Button className="w-full bg-black text-white hover:bg-gray-800">
-                        Sign In
-                      </Button>
-                    </Link>
-                    <Link
-                      href="/sign-up"
-                      className="w-full"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <Button variant="outline" className="w-full">
-                        Create Account
-                      </Button>
-                    </Link>
-                  </div>
-                ) : (
-                  <Link
-                    href="/account"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <Button className="w-full bg-black text-white hover:bg-gray-800">
-                      My Account
-                    </Button>
-                  </Link>
-                )}
-              </div>
-
-              <nav className="p-6">
-                <ul className="space-y-1">
-                  {mainNavItems.map((item) => (
-                    <li key={item.name}>
-                      {item.hasMegaMenu ? (
-                        <div>
-                          <button
-                            onClick={() =>
-                              setActiveMegaMenu(
-                                activeMegaMenu === item.name ? null : item.name
-                              )
-                            }
-                            className="w-full flex items-center justify-between py-3 px-4 hover:bg-gray-50 rounded-lg transition-colors font-medium"
-                          >
-                            <span>{item.name}</span>
-                            <ChevronDown
-                              className={`h-4 w-4 transition-transform ${
-                                activeMegaMenu === item.name ? "rotate-180" : ""
-                              }`}
-                            />
-                          </button>
-                          <AnimatePresence>
-                            {activeMegaMenu === item.name && (
-                              <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: "auto", opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                transition={{ duration: 0.2 }}
-                                className="overflow-hidden"
-                              >
-                                <div className="pl-4 py-2 space-y-4">
-                                  {megaMenuItems["Ready to Wear"].sections.map(
-                                    (section) => (
-                                      <div key={section.title}>
-                                        <h4 className="font-semibold text-sm mb-2 px-4">
-                                          {section.title}
-                                        </h4>
-                                        <ul className="space-y-1">
-                                          {section.items.map((subItem) => (
-                                            <li key={subItem.name}>
-                                              <Link
-                                                href={subItem.href}
-                                                className="block py-2 px-4 text-sm text-gray-600 hover:text-black hover:bg-gray-50 rounded-lg transition-colors"
-                                                onClick={() =>
-                                                  setMobileMenuOpen(false)
-                                                }
-                                              >
-                                                {subItem.name}
-                                              </Link>
-                                            </li>
-                                          ))}
-                                        </ul>
-                                      </div>
-                                    )
-                                  )}
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      ) : (
-                        <Link
-                          href={item.href}
-                          className={`block py-3 px-4 hover:bg-gray-50 rounded-lg transition-colors font-medium ${
-                            item.highlight ? "text-red-600" : ""
-                          }`}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          {item.name}
-                        </Link>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-
-              <div className="p-6 border-t border-gray-200 space-y-4">
-                <Link
-                  href="/track-order"
-                  className="block py-2 text-sm text-gray-600 hover:text-black transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Track Order
-                </Link>
-                <Link
-                  href="/help"
-                  className="block py-2 text-sm text-gray-600 hover:text-black transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Help & Support
-                </Link>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* Spacer to prevent content from going under fixed header */}
+      {/* Spacer */}
       <div className="h-16 lg:h-[88px]" />
     </>
   );
