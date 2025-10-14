@@ -264,7 +264,7 @@ function AnimatedHero() {
           className="relative col-span-1"
         >
           <Image
-            src="https://images.pexels.com/photos/1926620/pexels-photo-1926620.jpeg?auto=compress&cs=tinysrgb&w=800"
+            src="/hero/1.jpg"
             alt="African fashion editorial"
             fill
             className="object-cover"
@@ -280,7 +280,7 @@ function AnimatedHero() {
           className="relative col-span-1 lg:col-span-2"
         >
           <Image
-            src="https://images.pexels.com/photos/1055691/pexels-photo-1055691.jpeg?auto=compress&cs=tinysrgb&w=1200"
+            src="/hero/2.jpg"
             alt="African fashion editorial"
             fill
             className="object-cover"
@@ -338,7 +338,7 @@ function AnimatedHero() {
           className="relative col-span-2 lg:col-span-1"
         >
           <Image
-            src="https://images.pexels.com/photos/3394658/pexels-photo-3394658.jpeg?auto=compress&cs=tinysrgb&w=800"
+            src="/hero/3.jpg"
             alt="African fashion editorial"
             fill
             className="object-cover"
@@ -713,7 +713,7 @@ export default function HomePage() {
             className="relative aspect-[3/4] overflow-hidden rounded-lg"
           >
             <Image
-              src="https://images.pexels.com/photos/1405963/pexels-photo-1405963.jpeg?auto=compress&cs=tinysrgb&w=1200"
+              src="/hero/1.jpg"
               alt="Explore your style"
               fill
               className="object-cover"
