@@ -33,10 +33,12 @@ export default function SiteHeader() {
 
   useEffect(() => {
     document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
-    return () => (document.body.style.overflow = "unset");
+    return () => {
+      document.body.style.overflow = "unset";
+    };
   }, [mobileMenuOpen]);
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: any) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       window.location.href = `/shop?search=${encodeURIComponent(searchQuery)}`;
@@ -169,9 +171,6 @@ export default function SiteHeader() {
                 <div
                   key={item.name}
                   className="relative"
-                  onMouseEnter={() =>
-                    item.hasMegaMenu && setActiveMegaMenu(item.name)
-                  }
                   onMouseLeave={() => setActiveMegaMenu(null)}
                 >
                   {item.hasMegaMenu ? (
@@ -242,7 +241,6 @@ export default function SiteHeader() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
               className="absolute top-full left-0 right-0 bg-white border-t border-gray-200 shadow-xl"
-              onMouseEnter={() => setActiveMegaMenu("Ready to Wear")}
               onMouseLeave={() => setActiveMegaMenu(null)}
             >
               <div className="container py-12 grid grid-cols-3 gap-12">
