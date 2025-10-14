@@ -1,10 +1,10 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
-import { createAuthSlice } from "./slices/AuthSlice";
+import { createAuthSlice } from "./slices/authSlice";
 import { createCartSlice } from "./slices/cartSlice";
 import { createProductSlice } from "./slices/productSlice";
 import { createWishlistSlice } from "./slices/wishlistSlice";
-import { createUISlice } from "./slices/UISlice";
+import { createUISlice } from "./slices/uiSlice";
 import type {
   AuthState,
   CartState,
