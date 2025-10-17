@@ -280,9 +280,11 @@ function NikeHero() {
                 asChild
                 size="lg"
                 variant="outline"
-                className="border-2 border-white text-white hover:bg-white hover:text-black font-medium uppercase tracking-wider px-8 h-12 rounded-full"
+                className="border-2 border-white text-black hover:bg-white hover:text-black font-medium uppercase tracking-wider px-8 h-12 rounded-full"
               >
-                <Link href="/about">Learn More</Link>
+                <Link href="/about" className="text-black">
+                  Learn More
+                </Link>
               </Button>
             </motion.div>
           </motion.div>
