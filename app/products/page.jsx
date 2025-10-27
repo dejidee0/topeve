@@ -2,6 +2,9 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import Image from "next/image";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import SearchBar from "@/components/shared/products/searchBar";
 import { products as mockProducts } from "@/lib/mockProducts";
@@ -12,6 +15,7 @@ import FilterSidebar from "@/components/shared/products/filterBar";
 import EmptyState from "@/components/shared/products/emptyState";
 import ProductGrid from "@/components/shared/products/productsGrid";
 import { fuzzySearch } from "@/utils/searchUtils";
+import { ArrowRight } from "lucide-react";
 
 export default function ProductsPage() {
   const searchParams = useSearchParams();
@@ -163,19 +167,63 @@ export default function ProductsPage() {
             <SearchBar query={query} setQuery={setQuery} />
           </div>
 
-          <div className="mb-6 relative rounded-xl overflow-hidden">
-            <img
-              alt="Editorial"
-              src="https://images.unsplash.com/photo-1495121605193-b116b5b09f10?auto=format&fit=crop&w=1600&q=80"
-              className="w-full h-44 object-cover rounded-xl"
-            />
-            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-              <div className="text-center text-cream">
-                <div className="text-lg font-heading">New: Bridal Capsule</div>
-                <div className="text-sm">Limited pieces — shop the edit</div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mb-6 relative rounded-2xl overflow-hidden group cursor-pointer shadow-lg hover:shadow-2xl transition-shadow duration-500"
+          >
+            <Link href="/ready-to-wear/bridal-shower" className="block">
+              {/* Image */}
+              <div className="relative h-56 overflow-hidden">
+                <Image
+                  alt="Bridal Capsule Collection"
+                  src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1600&q=80"
+                  fill
+                  sizes="400px"
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
               </div>
-            </div>
-          </div>
+
+              {/* Content */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                {/* Badge */}
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="inline-block px-3 py-1 bg-gold/90 backdrop-blur-sm text-brand text-[10px] font-bold uppercase tracking-wider rounded-full mb-3"
+                >
+                  New Arrival
+                </motion.div>
+
+                {/* Title */}
+                <h3 className="font-heading text-2xl md:text-3xl text-cream mb-2 transform transition-transform duration-300 group-hover:scale-105">
+                  Bridal Capsule
+                </h3>
+
+                {/* Description */}
+                <p className="text-cream/90 text-sm mb-4 max-w-[200px]">
+                  Limited pieces — shop the edit
+                </p>
+
+                {/* CTA Button */}
+                <div className="inline-flex items-center gap-2 text-cream text-xs font-semibold border border-cream/30 px-4 py-2 rounded-full backdrop-blur-sm bg-white/10 group-hover:bg-white/20 transition-all duration-300">
+                  <span>Shop Now</span>
+                  <ArrowRight
+                    size={14}
+                    className="transform transition-transform duration-300 group-hover:translate-x-1"
+                  />
+                </div>
+              </div>
+
+              {/* Decorative Corner Accent */}
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-gold/20 to-transparent" />
+            </Link>
+          </motion.div>
 
           {filtered.length === 0 ? (
             <EmptyState query={query} />
