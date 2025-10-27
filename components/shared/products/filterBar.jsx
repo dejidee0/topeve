@@ -2,20 +2,10 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronDown, ChevronUp, SlidersHorizontal } from "lucide-react";
+import { X, ChevronDown, SlidersHorizontal } from "lucide-react";
+import { PRODUCT_COLORS } from "@/lib/mockProducts";
 
-const COLORS = [
-  { name: "Black", value: "black", hex: "#222222" },
-  { name: "White", value: "white", hex: "#FFFFFF" },
-  { name: "Beige", value: "beige", hex: "#F5F5DC" },
-  { name: "Brown", value: "brown", hex: "#8B4513" },
-  { name: "Navy", value: "navy", hex: "#000080" },
-  { name: "Olive", value: "olive", hex: "#808000" },
-  { name: "Burgundy", value: "burgundy", hex: "#800020" },
-  { name: "Ivory", value: "ivory", hex: "#FFFFF0" },
-];
-
-const SIZES = ["XS", "S", "M", "L", "XL", "2XL"];
+const SIZES = ["XS", "S", "M", "L", "XL", "2XL", "2-3Y", "4-5Y"];
 
 const PRICE_RANGES = [
   { label: "Under ₦20,000", min: 0, max: 20000 },
@@ -23,6 +13,14 @@ const PRICE_RANGES = [
   { label: "₦50,000 - ₦100,000", min: 50000, max: 100000 },
   { label: "₦100,000 - ₦200,000", min: 100000, max: 200000 },
   { label: "Over ₦200,000", min: 200000, max: Infinity },
+];
+
+// Subcategories for Ready to Wear
+const READY_TO_WEAR_SUBCATEGORIES = [
+  { name: "Women", slug: "women" },
+  { name: "Men", slug: "men" },
+  { name: "Kids", slug: "kids" },
+  { name: "Bridal Shower", slug: "bridal-shower" },
 ];
 
 export default function FilterSidebar({
@@ -34,6 +32,7 @@ export default function FilterSidebar({
   const [selected, setSelected] = useState(activeFilters);
   const [expandedSections, setExpandedSections] = useState({
     categories: true,
+    subcategories: true,
     price: true,
     colors: true,
     sizes: true,
@@ -46,10 +45,23 @@ export default function FilterSidebar({
     }));
   };
 
-  const toggleCategory = (category) => {
+  const toggleCategory = (categorySlug) => {
     const next = {
       ...selected,
-      category: selected.category?.slug === category.slug ? null : category,
+      category: selected.category === categorySlug ? null : categorySlug,
+      // Clear subcategory if changing categories
+      subcategory:
+        selected.category === categorySlug ? selected.subcategory : null,
+    };
+    setSelected(next);
+    onChange(next);
+  };
+
+  const toggleSubcategory = (subcategorySlug) => {
+    const next = {
+      ...selected,
+      subcategory:
+        selected.subcategory === subcategorySlug ? null : subcategorySlug,
     };
     setSelected(next);
     onChange(next);
@@ -88,6 +100,7 @@ export default function FilterSidebar({
   const clearAllFilters = () => {
     const cleared = {
       category: null,
+      subcategory: null,
       colors: [],
       sizes: [],
       priceRange: null,
@@ -99,6 +112,7 @@ export default function FilterSidebar({
   const getActiveFilterCount = () => {
     let count = 0;
     if (selected.category) count++;
+    if (selected.subcategory) count++;
     if (selected.colors?.length > 0) count += selected.colors.length;
     if (selected.sizes?.length > 0) count += selected.sizes.length;
     if (selected.priceRange) count++;
@@ -106,6 +120,7 @@ export default function FilterSidebar({
   };
 
   const activeCount = getActiveFilterCount();
+  const isReadyToWearSelected = selected.category === "ready-to-wear";
 
   return (
     <aside className="bg-white rounded-2xl shadow-sm border border-taupe/20 p-6 space-y-6 h-fit sticky top-24">
@@ -157,9 +172,9 @@ export default function FilterSidebar({
               transition={{ duration: 0.2 }}
             >
               <button
-                onClick={() => toggleCategory(cat)}
+                onClick={() => toggleCategory(cat.slug)}
                 className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  selected.category?.slug === cat.slug
+                  selected.category === cat.slug
                     ? "bg-brand text-cream shadow-sm"
                     : "text-charcoal/80 hover:bg-taupe/10 hover:text-brand"
                 }`}
@@ -170,6 +185,36 @@ export default function FilterSidebar({
           ))}
         </ul>
       </FilterSection>
+
+      {/* Subcategories - Only show when Ready to Wear is selected */}
+      {isReadyToWearSelected && (
+        <FilterSection
+          title="Ready to Wear"
+          isExpanded={expandedSections.subcategories}
+          onToggle={() => toggleSection("subcategories")}
+        >
+          <ul className="space-y-1.5">
+            {READY_TO_WEAR_SUBCATEGORIES.map((subcat) => (
+              <motion.li
+                key={subcat.slug}
+                whileHover={{ x: 4 }}
+                transition={{ duration: 0.2 }}
+              >
+                <button
+                  onClick={() => toggleSubcategory(subcat.slug)}
+                  className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                    selected.subcategory === subcat.slug
+                      ? "bg-gold/30 text-brand font-semibold"
+                      : "text-charcoal/70 hover:bg-taupe/10 hover:text-brand"
+                  }`}
+                >
+                  {subcat.name}
+                </button>
+              </motion.li>
+            ))}
+          </ul>
+        </FilterSection>
+      )}
 
       {/* Price Range */}
       <FilterSection
@@ -211,7 +256,7 @@ export default function FilterSidebar({
         onToggle={() => toggleSection("colors")}
       >
         <div className="grid grid-cols-4 gap-3">
-          {COLORS.map((color) => {
+          {PRODUCT_COLORS.map((color) => {
             const isSelected = selected.colors?.includes(color.value);
             return (
               <motion.button
@@ -231,7 +276,7 @@ export default function FilterSidebar({
                   style={{
                     backgroundColor: color.hex,
                     boxShadow:
-                      color.value === "white"
+                      color.value === "clear"
                         ? "inset 0 0 0 1px rgba(0,0,0,0.1)"
                         : "none",
                   }}
@@ -242,7 +287,7 @@ export default function FilterSidebar({
                       animate={{ scale: 1 }}
                       className="absolute inset-0 flex items-center justify-center"
                     >
-                      <div className="w-2 h-2 rounded-full bg-brand shadow-lg" />
+                      <div className="w-2 h-2 rounded-full bg-white shadow-lg border border-brand" />
                     </motion.div>
                   )}
                 </div>
@@ -270,7 +315,7 @@ export default function FilterSidebar({
                 onClick={() => toggleSize(size)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className={`px-4 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+                className={`px-3 py-2.5 rounded-lg text-xs font-semibold transition-all ${
                   isSelected
                     ? "bg-brand text-cream shadow-sm"
                     : "bg-taupe/10 text-charcoal/70 hover:bg-taupe/20 hover:text-brand"
@@ -296,14 +341,29 @@ export default function FilterSidebar({
           <div className="flex flex-wrap gap-2">
             {selected.category && (
               <FilterBadge
-                label={selected.category.name}
+                label={
+                  categories.find((c) => c.slug === selected.category)?.name ||
+                  selected.category
+                }
                 onRemove={() => toggleCategory(selected.category)}
+              />
+            )}
+            {selected.subcategory && (
+              <FilterBadge
+                label={
+                  READY_TO_WEAR_SUBCATEGORIES.find(
+                    (s) => s.slug === selected.subcategory
+                  )?.name || selected.subcategory
+                }
+                onRemove={() => toggleSubcategory(selected.subcategory)}
               />
             )}
             {selected.colors?.map((color) => (
               <FilterBadge
                 key={color}
-                label={color}
+                label={
+                  PRODUCT_COLORS.find((c) => c.value === color)?.name || color
+                }
                 onRemove={() => toggleColor(color)}
               />
             ))}
@@ -333,7 +393,7 @@ export default function FilterSidebar({
   );
 }
 
-// Filter Section Component with Collapse
+// Filter Section Component
 function FilterSection({ title, isExpanded, onToggle, children }) {
   return (
     <div className="border-b border-taupe/10 pb-4 last:border-b-0">

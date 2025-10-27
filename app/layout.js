@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${playfair.variable} ${montserrat.variable}`}>
       <body className="bg-cream text-charcoal font-body">
         <Navbar />
-        <main className="pt-[120px]">{children}</main>
+        <main className="md:pt-20 pt-10">{children}</main>
         <Footer />
       </body>
     </html>

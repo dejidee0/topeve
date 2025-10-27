@@ -308,7 +308,7 @@ export default function HomePage() {
                   ))}
                 </div>
                 <p className="text-charcoal/80 mb-6 leading-relaxed">
-                  "{t.quote}"
+                  &quot;{t.quote}&quot;
                 </p>
                 <cite className="block text-sm font-semibold text-brand not-italic">
                   — {t.name}
@@ -320,33 +320,40 @@ export default function HomePage() {
       </section>
 
       {/* NEWSLETTER / CTA */}
-      <section className="px-6 lg:px-16 py-20 bg-gradient-to-br from-brand to-brand/90">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="px-4 sm:px-8 lg:px-16 py-16 sm:py-20 bg-gradient-to-br from-brand to-brand/90">
+        <div className="max-w-3xl mx-auto text-center">
           <motion.div
-            initial="hidden"
-            whileInView="show"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            variants={fade}
-            className="space-y-6"
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="space-y-5 sm:space-y-6"
           >
-            <Sparkles size={40} className="text-gold mx-auto" />
-            <h3 className="font-heading text-3xl md:text-4xl text-cream">
+            {/* Icon */}
+            <Sparkles size={38} className="text-gold mx-auto mb-2 sm:mb-0" />
+
+            {/* Title */}
+            <h3 className="font-heading text-2xl sm:text-3xl md:text-4xl text-cream leading-tight">
               Join the Topeve Edit
             </h3>
-            <p className="text-cream/90 text-lg max-w-2xl mx-auto">
-              Sign up for exclusive drops, styling edits and early access to
+
+            {/* Description */}
+            <p className="text-cream/90 text-base sm:text-lg max-w-2xl mx-auto px-2">
+              Sign up for exclusive drops, styling edits, and early access to
               sales.
             </p>
 
-            <form className="max-w-xl mx-auto flex gap-3 mt-8">
+            {/* Form */}
+            <form className="max-w-xl mx-auto flex flex-col sm:flex-row gap-3 sm:gap-4 mt-8">
               <input
                 type="email"
-                className="flex-1 rounded-full px-6 py-4 border-2 border-cream/20 bg-white/10 backdrop-blur-sm text-cream placeholder:text-cream/60 outline-none focus:border-gold transition-colors"
                 placeholder="Enter your email"
+                className="flex-1 rounded-full px-5 sm:px-6 py-3 sm:py-4 border-2 border-cream/20 bg-white/10 backdrop-blur-sm 
+          text-cream placeholder:text-cream/60 outline-none focus:border-gold transition-colors w-full text-sm sm:text-base"
               />
               <button
                 type="submit"
-                className="px-8 py-4 bg-gold text-brand rounded-full font-medium hover:bg-cream transition-colors duration-300 whitespace-nowrap"
+                className="px-6 sm:px-8 py-3 sm:py-4 bg-gold text-brand rounded-full font-medium hover:bg-cream transition-colors duration-300 text-sm sm:text-base"
               >
                 Subscribe
               </button>

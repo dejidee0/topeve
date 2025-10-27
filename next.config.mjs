@@ -10,6 +10,12 @@ const nextConfig = {
       },
     ],
   },
+  compress: true,
+  // Production source maps
+  productionBrowserSourceMaps: false,
+  // Optimize fonts
+  optimizeFonts: true,
+
   /* config options here */
 };
 
