@@ -1,8 +1,8 @@
 // app/layout.jsx
 import "./globals.css";
 import { Playfair_Display, Montserrat } from "next/font/google";
-import Navbar from "@/components/common/Navbar";
-import Footer from "@/components/common/Footer";
+import Navbar from "@/components/common/navbar";
+import Footer from "@/components/common/footer";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
