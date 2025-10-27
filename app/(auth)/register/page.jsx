@@ -4,4 +4,4 @@ const Register = () => {
   return <div></div>;
 };
 
-export default ARegister;
+export default Register;
