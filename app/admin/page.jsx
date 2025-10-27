@@ -1,7 +1,7 @@
 import React from "react";
 
-const Register = () => {
+const Admin = () => {
   return <div></div>;
 };
 
-export default ARegister;
+export default Admin;
