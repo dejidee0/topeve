@@ -2,7 +2,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ShoppingBag, ArrowRight, Sparkles, Star } from "lucide-react";
+import { ShoppingBag, ArrowRight, Sparkles, Star, Heart } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { bentoItems, featuredProducts } from "@/lib/constants";
@@ -19,7 +19,7 @@ export default function HomePage() {
       {/* HERO */}
       <Hero />
 
-      {/* BENTO GRID - REDESIGNED */}
+      {/* BENTO GRID */}
       <section className="px-6 lg:px-16 py-20 bg-gradient-to-b from-cream to-taupe/20">
         <div className="max-w-7xl mx-auto">
           <motion.div
@@ -48,9 +48,9 @@ export default function HomePage() {
                 className={`${item.span} group relative overflow-hidden rounded-3xl cursor-pointer`}
               >
                 <Link
-                  href={`/collections/${item.title
-                    .toLowerCase()
-                    .replace(/\s+/g, "-")}`}
+                  href={`/products?category=${
+                    item.slug || item.title.toLowerCase().replace(/\s+/g, "-")
+                  }`}
                   className="block w-full h-full"
                 >
                   {/* Image with overlay */}
@@ -75,12 +75,7 @@ export default function HomePage() {
                       className="relative z-10"
                     >
                       {/* Accent line */}
-                      <motion.div
-                        className={`w-12 h-1 bg-${item.accent} rounded-full mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-                        style={{
-                          backgroundColor: `var(--color-${item.accent})`,
-                        }}
-                      />
+                      <motion.div className="w-12 h-1 bg-gold rounded-full mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                       <h3 className="font-heading text-2xl md:text-3xl text-white mb-2 transform group-hover:translate-x-2 transition-transform duration-500">
                         {item.title}
@@ -121,13 +116,202 @@ export default function HomePage() {
             className="text-center mt-12"
           >
             <Link
-              href="/collections"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-brand text-cream rounded-full hover:bg-gold transition-colors duration-300 font-medium"
+              href="/products"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-brand text-cream rounded-full hover:bg-gold hover:text-brand transition-all duration-300 font-medium shadow-lg hover:shadow-xl"
             >
               View All Collections
               <ArrowRight size={18} />
             </Link>
           </motion.div>
+        </div>
+      </section>
+
+      {/* BRIDAL SHOWER SHOWCASE - NEW SECTION */}
+      <section className="relative px-6 lg:px-16 py-32 overflow-hidden bg-gradient-to-br from-cream via-white to-taupe/10">
+        {/* Decorative Elements */}
+        <div className="absolute top-20 left-10 w-72 h-72 bg-gold/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-brand/5 rounded-full blur-3xl" />
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left: Content */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="space-y-8"
+            >
+              {/* Badge */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="inline-flex items-center gap-2 px-5 py-2 bg-gold/20 backdrop-blur-sm rounded-full"
+              >
+                <Heart size={16} className="text-brand fill-brand" />
+                <span className="text-sm font-bold text-brand uppercase tracking-wider">
+                  Exclusive Collection
+                </span>
+              </motion.div>
+
+              {/* Title */}
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3 }}
+                className="font-heading text-5xl md:text-6xl lg:text-7xl text-brand leading-tight"
+              >
+                Bridal Shower
+                <span className="block text-gold mt-2">Elegance</span>
+              </motion.h2>
+
+              {/* Description */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.4 }}
+                className="text-lg md:text-xl text-charcoal/80 leading-relaxed max-w-xl"
+              >
+                Celebrate your special moments in exquisite style. Our bridal
+                collection features handcrafted gowns and ensembles designed to
+                make every bride feel extraordinary.
+              </motion.p>
+
+              {/* Features */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5 }}
+                className="grid grid-cols-2 gap-6"
+              >
+                {[
+                  { label: "Hand-embroidered", value: "Lace Details" },
+                  { label: "Premium", value: "Silk & Satin" },
+                  { label: "Custom", value: "Alterations" },
+                  { label: "Limited", value: "Edition Pieces" },
+                ].map((feature, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.6 + idx * 0.1 }}
+                    className="bg-white/60 backdrop-blur-sm rounded-2xl p-4 border border-taupe/20"
+                  >
+                    <div className="text-xs text-charcoal/60 uppercase tracking-wider mb-1">
+                      {feature.label}
+                    </div>
+                    <div className="text-base font-semibold text-brand">
+                      {feature.value}
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              {/* CTA Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.7 }}
+                className="flex flex-col sm:flex-row gap-4 pt-4"
+              >
+                <Link
+                  href="/products?category=ready-to-wear&subcategory=bridal-shower"
+                  className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-brand text-cream rounded-full font-semibold text-lg hover:bg-gold hover:text-brand transition-all duration-300 shadow-lg hover:shadow-2xl"
+                >
+                  <span>Shop Bridal Collection</span>
+                  <ArrowRight
+                    size={20}
+                    className="group-hover:translate-x-2 transition-transform duration-300"
+                  />
+                </Link>
+              </motion.div>
+            </motion.div>
+
+            {/* Right: Images Grid */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="relative"
+            >
+              {/* Main Image */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.3, duration: 0.8 }}
+                className="relative rounded-3xl overflow-hidden shadow-2xl"
+              >
+                <div className="relative aspect-[3/4] lg:aspect-[4/5]">
+                  <Image
+                    src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80"
+                    alt="Bridal Collection"
+                    fill
+                    className="object-cover"
+                  />
+                  {/* Overlay gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand/30 via-transparent to-transparent" />
+                </div>
+
+                {/* Floating badge */}
+              </motion.div>
+
+              {/* Secondary Image - Small overlay */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+                whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+                className="absolute -bottom-8 -left-8 w-48 h-64 rounded-2xl overflow-hidden shadow-2xl border-4 border-white hidden lg:block"
+              >
+                <Image
+                  src="https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=800&q=80"
+                  alt="Bridal Detail"
+                  fill
+                  className="object-cover"
+                />
+              </motion.div>
+
+              {/* Decorative floating hearts */}
+              <motion.div
+                animate={{
+                  y: [0, -20, 0],
+                  rotate: [0, 10, 0],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="absolute -top-4 -right-4 text-gold/20"
+              >
+                <Heart size={64} className="fill-current" />
+              </motion.div>
+              <motion.div
+                animate={{
+                  y: [0, -15, 0],
+                  rotate: [0, -10, 0],
+                }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1,
+                }}
+                className="absolute bottom-20 -right-8 text-gold/20"
+              >
+                <Heart size={48} className="fill-current" />
+              </motion.div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
@@ -175,7 +359,7 @@ export default function HomePage() {
                   {/* Quick view on hover */}
                   <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
                     <Link
-                      href={`/product/${p.id}`}
+                      href={`/product/${p.slug || p.id}`}
                       className="block text-center text-white text-sm font-medium"
                     >
                       Quick View
@@ -192,7 +376,7 @@ export default function HomePage() {
                       {p.price}
                     </span>
                     <Link
-                      href={`/product/${p.id}`}
+                      href={`/product/${p.slug || p.id}`}
                       className="text-sm text-gold hover:text-brand transition-colors font-medium flex items-center gap-1"
                     >
                       Shop
@@ -203,6 +387,22 @@ export default function HomePage() {
               </motion.div>
             ))}
           </div>
+
+          {/* View All Products Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mt-12"
+          >
+            <Link
+              href="/products"
+              className="inline-flex items-center gap-2 px-8 py-4 border-2 border-brand text-brand rounded-full hover:bg-brand hover:text-cream transition-all duration-300 font-medium"
+            >
+              View All Products
+              <ArrowRight size={18} />
+            </Link>
+          </motion.div>
         </div>
       </section>
 
@@ -247,10 +447,16 @@ export default function HomePage() {
             </p>
 
             <div className="flex gap-4 pt-4">
-              <Link href="/about" className="btn-ghost">
+              <Link
+                href="/about"
+                className="px-6 py-3 border-2 border-brand text-brand rounded-full font-medium hover:bg-brand hover:text-cream transition-all duration-300"
+              >
                 Learn More
               </Link>
-              <Link href="/shop" className="btn-primary">
+              <Link
+                href="/products"
+                className="px-6 py-3 bg-brand text-cream rounded-full font-medium hover:bg-gold hover:text-brand transition-all duration-300"
+              >
                 Shop Now
               </Link>
             </div>
