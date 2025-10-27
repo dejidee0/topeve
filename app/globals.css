@@ -1,0 +1,57 @@
+/* globals.css */
+@import "tailwindcss";
+
+@theme {
+  /* Define colors for Tailwind utilities */
+  --color-brand: #5b3a2e;
+  --color-cream: #f5efe8;
+  --color-sand: #a78b6b;
+  --color-gold: #d4af7f;
+  --color-charcoal: #222222;
+  --color-taupe: #cfc2b6;
+
+  /* Fonts */
+  --font-family-heading: var(--font-heading);
+  --font-family-body: var(--font-body);
+
+  /* Create RGB versions for rgba usage */
+  --color-cream-rgb: 245 239 232;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-family-body), sans-serif;
+    color: var(--color-charcoal);
+    background-color: var(--color-cream);
+    line-height: 1.5;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-family-heading), serif;
+    color: var(--color-brand);
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  a {
+    color: var(--color-brand);
+    text-decoration: none;
+  }
+
+  a:hover,
+  a:focus {
+    color: var(--color-gold);
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font-family: inherit;
+  }
+}
