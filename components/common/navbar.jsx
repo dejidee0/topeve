@@ -19,6 +19,7 @@ import {
   ChevronRight,
   ChevronDown,
 } from "lucide-react";
+import { useCartStore } from "@/lib/store";
 
 export default function Navbar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -26,6 +27,11 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [readyToWearOpen, setReadyToWearOpen] = useState(false);
   const router = useRouter();
+
+  // Cart store
+  const getTotalItems = useCartStore((state) => state.getTotalItems);
+  const openCart = useCartStore((state) => state.openCart);
+  const totalItems = getTotalItems();
 
   const { scrollY } = useScroll();
   const bgOpacity = useTransform(scrollY, [0, 200], [1, 0.95]);
@@ -64,7 +70,7 @@ export default function Navbar() {
   };
 
   const handleCategoryClick = (categorySlug) => {
-    router.push(`/products?category=${categorySlug}`);
+    router.replace(`/products?category=${categorySlug}`);
     setSidebarOpen(false);
   };
 
@@ -125,19 +131,29 @@ export default function Navbar() {
 
           {/* Right - Icons */}
           <div className="flex justify-end items-center gap-4 md:flex-1">
-            <Link
-              href="/cart"
-              className="text-brand hover:text-gold transition-colors relative"
+            {/* Cart Button - Opens Sidebar */}
+            <button
+              onClick={openCart}
+              className="relative text-brand hover:text-gold transition-colors"
+              aria-label="Open shopping cart"
             >
               <ShoppingCart size={22} />
-              <span className="absolute -top-2 -right-2 bg-gold text-cream text-xs w-4 h-4 rounded-full flex items-center justify-center font-medium">
-                2
-              </span>
-            </Link>
+              {totalItems > 0 && (
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute -top-2 -right-2 bg-gold text-brand text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-sm"
+                >
+                  {totalItems > 9 ? "9+" : totalItems}
+                </motion.span>
+              )}
+            </button>
 
+            {/* Account Link */}
             <Link
               href="/account"
               className="hidden md:block text-brand hover:text-gold transition-colors"
+              aria-label="My account"
             >
               <User size={22} />
             </Link>
@@ -192,7 +208,7 @@ export default function Navbar() {
         </div>
       </motion.nav>
 
-      {/* Mobile Sidebar - MOVED OUTSIDE NAV */}
+      {/* Mobile Sidebar */}
       <AnimatePresence>
         {sidebarOpen && (
           <>
@@ -312,14 +328,25 @@ export default function Navbar() {
                     <User size={18} />
                     <span className="font-medium">My Account</span>
                   </Link>
-                  <Link
-                    href="/cart"
-                    className="flex items-center gap-3 py-3 px-4 text-brand hover:bg-taupe/10 rounded-lg transition-colors"
-                    onClick={() => setSidebarOpen(false)}
+
+                  {/* Cart Link with Badge */}
+                  <button
+                    onClick={() => {
+                      setSidebarOpen(false);
+                      openCart();
+                    }}
+                    className="w-full flex items-center justify-between py-3 px-4 text-brand hover:bg-taupe/10 rounded-lg transition-colors"
                   >
-                    <ShoppingCart size={18} />
-                    <span className="font-medium">My Cart</span>
-                  </Link>
+                    <div className="flex items-center gap-3">
+                      <ShoppingCart size={18} />
+                      <span className="font-medium">My Cart</span>
+                    </div>
+                    {totalItems > 0 && (
+                      <span className="bg-gold text-brand text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
+                        {totalItems > 9 ? "9+" : totalItems}
+                      </span>
+                    )}
+                  </button>
                 </div>
               </div>
             </motion.aside>

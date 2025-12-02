@@ -55,3 +55,26 @@
     font-family: inherit;
   }
 }
+
+@media print {
+  /* Hide navigation, footer, and action buttons when printing */
+  nav,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Optimize for printing */
+  body {
+    background: white !important;
+  }
+
+  .bg-cream {
+    background: white !important;
+  }
+
+  /* Ensure content is visible */
+  .text-brand {
+    color: #2c1810 !important;
+  }
+}

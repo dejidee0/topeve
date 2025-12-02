@@ -1,14 +1,6 @@
-// app/products/components/ProductGrid.jsx
 "use client";
 
-import { motion } from "framer-motion";
 import ProductCard from "./productCard";
-
-const container = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.06 } },
-};
-const item = { hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } };
 
 export default function ProductGrid({ products }) {
   if (!products || products.length === 0) {
@@ -20,17 +12,12 @@ export default function ProductGrid({ products }) {
   }
 
   return (
-    <motion.div
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6"
-    >
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
       {products.map((p) => (
-        <motion.div key={p.id} variants={item}>
+        <div key={p.id || p.slug}>
           <ProductCard product={p} />
-        </motion.div>
+        </div>
       ))}
-    </motion.div>
+    </div>
   );
 }

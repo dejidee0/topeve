@@ -9,6 +9,7 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
+    qualities: [75, 85, 90, 95],
   },
   compress: true,
   // Production source maps
