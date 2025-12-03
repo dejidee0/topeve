@@ -7,7 +7,7 @@ export const metadata = {
   title: "Checkout | Topeve",
   description: "Complete your purchase securely with our encrypted checkout.",
 };
-
+export const dynamic = "force-dynamic";
 function CheckoutSkeleton() {
   return (
     <div className="min-h-screen bg-cream pt-24 pb-16">
