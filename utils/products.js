@@ -73,7 +73,7 @@ export async function getAllProducts(options = {}) {
   const { data, error, count } = await query;
 
   if (error) {
-    console.error("❌ Error fetching all products:", error);
+    // console.error("❌ Error fetching all products:", error);
     return { data: null, error, count: 0 };
   }
 
