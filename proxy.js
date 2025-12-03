@@ -6,12 +6,6 @@ export async function proxy(request) {
 
 export const config = {
   matcher: [
-    "/admin/:path*",
-    // Match all request paths except those starting with:
-    // - _next/static
-    // - _next/image
-    // - favicon.ico
-    // - image files
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/admin/:path*", // middleware applies ONLY here
   ],
 };
