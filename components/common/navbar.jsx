@@ -238,7 +238,7 @@ export default function Navbar() {
                       {/* Menu Items */}
                       <div className="py-2">
                         <Link
-                          href="/account"
+                          href="/my-account"
                           onClick={() => setAccountMenuOpen(false)}
                           className="flex items-center gap-3 px-4 py-2.5 text-sm text-charcoal/80 hover:bg-taupe/10 hover:text-brand transition-colors"
                         >
@@ -246,20 +246,12 @@ export default function Navbar() {
                           <span>My Profile</span>
                         </Link>
                         <Link
-                          href="/account?tab=orders"
+                          href="/my-account"
                           onClick={() => setAccountMenuOpen(false)}
                           className="flex items-center gap-3 px-4 py-2.5 text-sm text-charcoal/80 hover:bg-taupe/10 hover:text-brand transition-colors"
                         >
                           <Package size={18} />
                           <span>My Orders</span>
-                        </Link>
-                        <Link
-                          href="/account?tab=address"
-                          onClick={() => setAccountMenuOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-charcoal/80 hover:bg-taupe/10 hover:text-brand transition-colors"
-                        >
-                          <Settings size={18} />
-                          <span>Settings</span>
                         </Link>
                       </div>
 
@@ -477,7 +469,7 @@ export default function Navbar() {
                 <div className="mt-6 border-t border-taupe/20 pt-4 space-y-2">
                   {isClient && !isUserAuthenticated && (
                     <Link
-                      href="/auth/signin"
+                      href="/login"
                       className="flex items-center justify-center gap-2 py-3 px-4 bg-brand text-cream rounded-lg hover:bg-gold hover:text-brand transition-colors font-semibold"
                       onClick={() => setSidebarOpen(false)}
                     >

@@ -84,7 +84,7 @@ export default function ResetPasswordPage() {
     if (result.success) {
       setResetSuccess(true);
       showNotification("Password updated successfully!", "success");
-      setTimeout(() => router.push("/auth/signin"), 3000);
+      setTimeout(() => router.push("/login"), 3000);
     } else {
       showNotification(result.error || "Failed to reset password", "error");
     }
@@ -144,7 +144,7 @@ export default function ResetPasswordPage() {
           </p>
 
           <Link
-            href="/auth/signin"
+            href="/login"
             className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-brand text-cream rounded-full font-semibold hover:bg-gold hover:text-brand transition-all duration-300 shadow-lg hover:shadow-xl"
           >
             <span>Continue to Sign In</span>
@@ -360,7 +360,7 @@ export default function ResetPasswordPage() {
             >
               Remember your password?{" "}
               <Link
-                href="/auth/signin"
+                href="/login"
                 className="text-brand font-semibold hover:text-gold transition-colors"
               >
                 Sign In

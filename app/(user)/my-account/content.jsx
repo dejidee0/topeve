@@ -61,7 +61,7 @@ export default function AccountPageContent() {
       console.log(
         "⚠️ [Account] User not authenticated, redirecting to sign in"
       );
-      router.push("/auth/signin?redirect=/account");
+      router.push("/login?redirect=/account");
     }
   }, [authLoading, isAuthenticated, router]);
 

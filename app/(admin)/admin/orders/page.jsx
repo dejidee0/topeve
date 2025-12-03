@@ -6,7 +6,5 @@ export const metadata = {
 };
 
 export default function OrdersPage() {
-  console.log("📋 Orders admin page loaded");
-
   return <OrdersPageContent />;
 }

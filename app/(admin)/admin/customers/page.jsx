@@ -6,7 +6,5 @@ export const metadata = {
 };
 
 export default function CustomersPage() {
-  console.log("👥 Customers admin page loaded");
-
   return <CustomersPageContent />;
 }

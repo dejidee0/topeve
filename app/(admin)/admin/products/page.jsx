@@ -6,7 +6,5 @@ export const metadata = {
 };
 
 export default function ProductsPage() {
-  console.log("📦 Products admin page loaded");
-
   return <ProductsPageContent />;
 }

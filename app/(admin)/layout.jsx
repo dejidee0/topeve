@@ -6,8 +6,6 @@ export const metadata = {
 };
 
 export default function AdminLayout({ children }) {
-  console.log("🔐 Admin layout loaded");
-
   return (
     <html>
       <body>

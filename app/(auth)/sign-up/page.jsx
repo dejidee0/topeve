@@ -497,7 +497,7 @@ export default function SignUpPage() {
                 >
                   Already have an account?{" "}
                   <Link
-                    href="/auth/signin"
+                    href="/login"
                     className="text-brand font-semibold hover:text-gold transition-colors"
                   >
                     Sign In

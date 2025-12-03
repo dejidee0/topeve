@@ -157,7 +157,7 @@ export default function ForgotPasswordPage() {
                 {/* Back to Sign In */}
                 <motion.div variants={fadeIn} className="text-center mt-8">
                   <Link
-                    href="/auth/signin"
+                    href="/login"
                     className="inline-flex items-center gap-2 text-gold hover:text-brand transition-colors font-medium"
                   >
                     <ArrowLeft size={16} />
@@ -173,7 +173,7 @@ export default function ForgotPasswordPage() {
                   <p className="text-sm text-charcoal/70 text-center">
                     Remember your password?{" "}
                     <Link
-                      href="/auth/signin"
+                      href="/login"
                       className="text-brand font-semibold hover:text-gold transition-colors"
                     >
                       Sign in here
@@ -266,7 +266,7 @@ export default function ForgotPasswordPage() {
                   </p>
 
                   <Link
-                    href="/auth/signin"
+                    href="/login"
                     className="inline-flex items-center gap-2 text-gold hover:text-brand transition-colors font-medium"
                   >
                     <ArrowLeft size={16} />
