@@ -15,8 +15,9 @@ import {
   Loader2,
 } from "lucide-react";
 import Image from "next/image";
-import { ordersAPI } from "@/utils/orders";
+
 import { formatPrice } from "@/utils/products";
+import { ordersAPI } from "@/lib/orders";
 
 export default function OrderConfirmationContent() {
   const searchParams = useSearchParams();

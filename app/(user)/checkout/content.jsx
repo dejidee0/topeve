@@ -15,14 +15,14 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCartStore } from "@/lib/store";
+import { useAuthStore, useCartStore } from "@/lib/store";
 import { formatPrice } from "@/utils/products";
 import { PaystackButton } from "react-paystack";
 import { ordersAPI } from "@/lib/orders";
-import { formatOrderMessage, sendWhatsAppNotification } from "@/utils/whatsapp";
 
 export default function CheckoutPageContent() {
   const router = useRouter();
+  const { user, isAuthenticated } = useAuthStore();
   const { items, getSubtotal, clearCart } = useCartStore();
 
   // Form state
@@ -48,13 +48,78 @@ export default function CheckoutPageContent() {
   const [errors, setErrors] = useState({});
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [isLoadingCustomerData, setIsLoadingCustomerData] = useState(false);
+
+  // Fetch and prefill customer data if user is logged in
+  useEffect(() => {
+    const fetchCustomerData = async () => {
+      if (!user?.id) {
+        console.log("ℹ️ [Checkout] No user logged in, skipping prefill");
+        return;
+      }
+
+      try {
+        setIsLoadingCustomerData(true);
+        console.log("📋 [Checkout] Fetching customer data for prefill...");
+
+        const { createClient } = await import("@/supabase/client");
+        const supabase = createClient();
+
+        const { data, error } = await supabase
+          .from("customers")
+          .select("*")
+          .eq("id", user.id)
+          .single();
+
+        if (error) {
+          console.error("❌ [Checkout] Error fetching customer:", error);
+          // Still use user email from auth
+          setFormData((prev) => ({
+            ...prev,
+            email: user.email || "",
+          }));
+          return;
+        }
+
+        console.log("✅ [Checkout] Customer data loaded, prefilling form");
+
+        // Prefill form with customer data
+        setFormData({
+          email: data.email || user.email || "",
+          firstName: data.first_name || "",
+          lastName: data.last_name || "",
+          phone: data.phone || "",
+          address: data.address_line1 || "",
+          apartment: data.address_line2 || "",
+          city: data.city || "",
+          state: data.state || "",
+          postalCode: data.postal_code || "",
+          country: data.country || "Nigeria",
+          orderNotes: "",
+        });
+      } catch (error) {
+        console.error("❌ [Checkout] Error:", error);
+        // Fallback to user email
+        setFormData((prev) => ({
+          ...prev,
+          email: user.email || "",
+        }));
+      } finally {
+        setIsLoadingCustomerData(false);
+      }
+    };
+
+    fetchCustomerData();
+  }, [user?.id, user?.email]);
 
   // Redirect if cart is empty
   useEffect(() => {
-    if (items.length === 0) {
+    if (items.length === 0 && !isProcessingPayment) {
+      console.log("⚠️ [Checkout] Cart is empty, redirecting to cart page");
       router.push("/cart");
     }
-  }, [items.length, router]);
+  }, [items.length, router, isProcessingPayment]);
 
   // Calculate totals (in kobo)
   const subtotalInKobo = getSubtotal();
@@ -153,13 +218,12 @@ export default function CheckoutPageContent() {
     }
   }, [formData, agreedToTerms]);
 
-  // Handle payment success
-  // app/checkout/content.jsx - Update the handlePaystackSuccessAction function
-
-  // app/checkout/content.jsx - Update handlePaystackSuccessAction
-
   const handlePaystackSuccessAction = async (reference) => {
     console.log("✅ [Checkout] Payment successful:", reference);
+
+    // CRITICAL: Set processing flag to prevent redirect to cart
+    setIsProcessingPayment(true);
+
     console.log("📋 [Checkout] Reference details:", {
       reference: reference.reference,
       transaction: reference.transaction,
@@ -179,6 +243,7 @@ export default function CheckoutPageContent() {
         tax: tax,
         discount: 0,
         total: totalInKobo,
+        customer_id: user?.id || null,
         currency: "NGN",
         customer_name: `${formData.firstName} ${formData.lastName}`,
         customer_email: formData.email,
@@ -193,11 +258,7 @@ export default function CheckoutPageContent() {
         paid_at: new Date().toISOString(),
       };
 
-      console.log("📦 [Checkout] Order data prepared:", {
-        customer: orderData.customer_name,
-        email: orderData.customer_email,
-        total: orderData.total,
-      });
+      console.log("📦 [Checkout] Order data prepared");
 
       // Prepare order items
       const orderItems = items.map((item) => ({
@@ -212,13 +273,11 @@ export default function CheckoutPageContent() {
         total_price: item.price * item.quantity,
       }));
 
-      console.log("🛍️ [Checkout] Order items prepared:", {
-        itemCount: orderItems.length,
-        items: orderItems.map((i) => ({
-          name: i.product_name,
-          qty: i.quantity,
-        })),
-      });
+      console.log(
+        "🛍️ [Checkout] Order items prepared:",
+        orderItems.length,
+        "items"
+      );
 
       // Save order to database
       console.log("💾 [Checkout] Saving order to database...");
@@ -229,70 +288,83 @@ export default function CheckoutPageContent() {
 
       if (orderError) {
         console.error("❌ [Checkout] Error saving order:", orderError);
-        console.error("❌ [Checkout] Error details:", {
-          message: orderError.message,
-          details: orderError.details,
-          hint: orderError.hint,
-        });
         throw orderError;
       }
 
       console.log("✅ [Checkout] Order saved successfully!");
-      console.log("📋 [Checkout] Saved order details:", {
-        id: savedOrder.id,
-        orderNumber: savedOrder.order_number,
-        total: savedOrder.total,
-      });
+      console.log("📋 [Checkout] Order number:", savedOrder.order_number);
 
-      // Send WhatsApp notification to admin
-      try {
-        console.log("📱 [Checkout] Preparing WhatsApp notification...");
-        const adminPhone =
-          process.env.NEXT_PUBLIC_ADMIN_WHATSAPP || "2348012345678";
-        const whatsappMessage = formatOrderMessage(
-          savedOrder,
-          savedOrder.order_items
-        );
-        const whatsappUrl = sendWhatsAppNotification(
-          adminPhone,
-          whatsappMessage
-        );
+      // Update customer data if user is logged in and data has changed
+      if (user?.id) {
+        console.log("💾 [Checkout] Updating customer data in database...");
+        const { createClient } = await import("@/supabase/client");
+        const supabase = createClient();
 
-        console.log("📱 [Checkout] WhatsApp URL generated:", whatsappUrl);
+        await supabase
+          .from("customers")
+          .upsert({
+            id: user.id,
+            email: formData.email,
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            phone: formData.phone,
+            address_line1: formData.address,
+            address_line2: formData.apartment,
+            city: formData.city,
+            state: formData.state,
+            postal_code: formData.postalCode,
+            country: formData.country,
+          })
+          .eq("id", user.id);
 
-        // Open WhatsApp in new tab (optional - auto-send notification)
-        if (typeof window !== "undefined") {
-          console.log("📱 [Checkout] Opening WhatsApp in new tab...");
-          window.open(whatsappUrl, "_blank");
-        }
-      } catch (whatsappError) {
-        console.error(
-          "⚠️ [Checkout] WhatsApp notification failed:",
-          whatsappError
-        );
-        // Don't throw - order was saved successfully
+        console.log("✅ [Checkout] Customer data updated");
       }
 
-      // Clear cart
+      // Send email notification in background (fire and forget)
+      console.log("📧 [Checkout] Sending email notifications...");
+      fetch("/api/send-order-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          order: savedOrder,
+          orderItems: savedOrder.order_items,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            console.log("✅ [Checkout] Email notifications sent successfully");
+          } else {
+            console.warn(
+              "⚠️ [Checkout] Email notification failed:",
+              data.error
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("❌ [Checkout] Email notification error:", error);
+          // Don't throw - order was saved successfully
+        });
+
+      // Clear cart BEFORE redirect
       console.log("🛒 [Checkout] Clearing cart...");
       clearCart();
 
-      // Redirect to success page
-      console.log("🔄 [Checkout] Redirecting to confirmation page...");
-      console.log(
-        "📋 [Checkout] Redirect URL:",
-        `/order-confirmation?reference=${savedOrder.order_number}`
-      );
-      router.push(`/order-confirmation?reference=${savedOrder.order_number}`);
+      // Small delay to ensure cart state is updated
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Redirect to success page using window.location for guaranteed redirect
+      const confirmationUrl = `/order-confirmation?reference=${savedOrder.order_number}`;
+      console.log("🔄 [Checkout] Redirecting to:", confirmationUrl);
+
+      // Use window.location.href for immediate redirect
+      window.location.href = confirmationUrl;
     } catch (error) {
       console.error("❌ [Checkout] Critical error processing order:", error);
-      console.error("❌ [Checkout] Error stack:", error.stack);
 
       // Still redirect to confirmation but show warning
       console.log("⚠️ [Checkout] Redirecting with error flag...");
-      router.push(
-        `/order-confirmation?reference=${reference.reference}&error=true`
-      );
+      window.location.href = `/order-confirmation?reference=${reference.reference}&error=true`;
     }
   };
 
@@ -336,6 +408,12 @@ export default function CheckoutPageContent() {
           <div>
             <h1 className="font-heading text-4xl text-brand mb-2">Checkout</h1>
             <p className="text-charcoal/60">Complete your purchase securely</p>
+            {isAuthenticated() && (
+              <p className="text-sm text-green-600 mt-1 flex items-center gap-1">
+                <User size={14} />
+                <span>Logged in as {user?.email}</span>
+              </p>
+            )}
           </div>
           <Link
             href="/cart"
@@ -360,6 +438,16 @@ export default function CheckoutPageContent() {
             </div>
           </div>
         </div>
+
+        {/* Loading State for Customer Data */}
+        {isLoadingCustomerData && (
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-8 flex items-center gap-3">
+            <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-sm text-blue-700">
+              Loading your saved information...
+            </p>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Forms */}
@@ -397,7 +485,8 @@ export default function CheckoutPageContent() {
                       value={formData.email}
                       onChange={handleChange}
                       onBlur={validateForm}
-                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all ${
+                      disabled={isLoadingCustomerData}
+                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all disabled:bg-taupe/10 disabled:cursor-wait ${
                         errors.email
                           ? "border-red-300 bg-red-50"
                           : "border-taupe/30"
@@ -425,7 +514,8 @@ export default function CheckoutPageContent() {
                       value={formData.firstName}
                       onChange={handleChange}
                       onBlur={validateForm}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all ${
+                      disabled={isLoadingCustomerData}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all disabled:bg-taupe/10 disabled:cursor-wait ${
                         errors.firstName
                           ? "border-red-300 bg-red-50"
                           : "border-taupe/30"
@@ -448,7 +538,8 @@ export default function CheckoutPageContent() {
                       value={formData.lastName}
                       onChange={handleChange}
                       onBlur={validateForm}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all ${
+                      disabled={isLoadingCustomerData}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all disabled:bg-taupe/10 disabled:cursor-wait ${
                         errors.lastName
                           ? "border-red-300 bg-red-50"
                           : "border-taupe/30"
@@ -479,7 +570,8 @@ export default function CheckoutPageContent() {
                       value={formData.phone}
                       onChange={handleChange}
                       onBlur={validateForm}
-                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all ${
+                      disabled={isLoadingCustomerData}
+                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all disabled:bg-taupe/10 disabled:cursor-wait ${
                         errors.phone
                           ? "border-red-300 bg-red-50"
                           : "border-taupe/30"
@@ -525,7 +617,8 @@ export default function CheckoutPageContent() {
                     value={formData.address}
                     onChange={handleChange}
                     onBlur={validateForm}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all ${
+                    disabled={isLoadingCustomerData}
+                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all disabled:bg-taupe/10 disabled:cursor-wait ${
                       errors.address
                         ? "border-red-300 bg-red-50"
                         : "border-taupe/30"
@@ -549,7 +642,8 @@ export default function CheckoutPageContent() {
                     name="apartment"
                     value={formData.apartment}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 border border-taupe/30 rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all"
+                    disabled={isLoadingCustomerData}
+                    className="w-full px-4 py-3 border border-taupe/30 rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all disabled:bg-taupe/10 disabled:cursor-wait"
                     placeholder="Apt 4B"
                   />
                 </div>
@@ -566,7 +660,8 @@ export default function CheckoutPageContent() {
                       value={formData.city}
                       onChange={handleChange}
                       onBlur={validateForm}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all ${
+                      disabled={isLoadingCustomerData}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all disabled:bg-taupe/10 disabled:cursor-wait ${
                         errors.city
                           ? "border-red-300 bg-red-50"
                           : "border-taupe/30"
@@ -586,7 +681,8 @@ export default function CheckoutPageContent() {
                       value={formData.state}
                       onChange={handleChange}
                       onBlur={validateForm}
-                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all ${
+                      disabled={isLoadingCustomerData}
+                      className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all disabled:bg-taupe/10 disabled:cursor-wait ${
                         errors.state
                           ? "border-red-300 bg-red-50"
                           : "border-taupe/30"
@@ -646,7 +742,8 @@ export default function CheckoutPageContent() {
                       name="postalCode"
                       value={formData.postalCode}
                       onChange={handleChange}
-                      className="w-full px-4 py-3 border border-taupe/30 rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all"
+                      disabled={isLoadingCustomerData}
+                      className="w-full px-4 py-3 border border-taupe/30 rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all disabled:bg-taupe/10 disabled:cursor-wait"
                       placeholder="100001"
                     />
                   </div>
@@ -663,8 +760,9 @@ export default function CheckoutPageContent() {
                 name="orderNotes"
                 value={formData.orderNotes}
                 onChange={handleChange}
+                disabled={isLoadingCustomerData}
                 rows={4}
-                className="w-full px-4 py-3 border border-taupe/30 rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all resize-none"
+                className="w-full px-4 py-3 border border-taupe/30 rounded-lg focus:ring-2 focus:ring-gold/40 focus:border-gold outline-none transition-all resize-none disabled:bg-taupe/10 disabled:cursor-wait"
                 placeholder="Any special instructions for your order..."
               />
             </div>
@@ -752,7 +850,8 @@ export default function CheckoutPageContent() {
                     type="checkbox"
                     checked={agreedToTerms}
                     onChange={(e) => setAgreedToTerms(e.target.checked)}
-                    className="mt-1 w-4 h-4 text-brand focus:ring-gold rounded border-taupe/30"
+                    disabled={isLoadingCustomerData}
+                    className="mt-1 w-4 h-4 text-brand focus:ring-gold rounded border-taupe/30 disabled:cursor-wait"
                   />
                   <span className="text-xs text-charcoal/70">
                     I agree to the{" "}
@@ -782,7 +881,7 @@ export default function CheckoutPageContent() {
               </div>
 
               {/* Payment Button */}
-              {isFormValid ? (
+              {isFormValid && !isLoadingCustomerData ? (
                 <PaystackButton
                   {...componentProps}
                   className="w-full mt-6 flex items-center justify-center gap-2 px-6 py-4 bg-brand text-cream rounded-full hover:bg-gold hover:text-brand transition-all duration-300 font-semibold"
@@ -794,10 +893,15 @@ export default function CheckoutPageContent() {
                 <button
                   type="button"
                   onClick={validateForm}
-                  className="w-full mt-6 flex items-center justify-center gap-2 px-6 py-4 bg-charcoal/20 text-charcoal/50 rounded-full cursor-not-allowed font-semibold"
+                  disabled={isLoadingCustomerData}
+                  className="w-full mt-6 flex items-center justify-center gap-2 px-6 py-4 bg-charcoal/20 text-charcoal/50 rounded-full cursor-not-allowed font-semibold disabled:cursor-wait"
                 >
                   <Lock size={20} />
-                  <span>Complete Form to Pay</span>
+                  <span>
+                    {isLoadingCustomerData
+                      ? "Loading..."
+                      : "Complete Form to Pay"}
+                  </span>
                 </button>
               )}
 

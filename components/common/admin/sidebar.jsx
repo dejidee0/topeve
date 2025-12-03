@@ -41,42 +41,6 @@ const menuItems = [
     href: "/admin/customers",
     badge: null,
   },
-  {
-    title: "Analytics",
-    icon: RiBarChartBoxLine,
-    href: "/admin/analytics",
-    badge: null,
-  },
-  {
-    title: "Collections",
-    icon: RiPaletteLine,
-    href: "/admin/collections",
-    badge: null,
-  },
-  {
-    title: "Media",
-    icon: RiImageLine,
-    href: "/admin/media",
-    badge: null,
-  },
-  {
-    title: "Promotions",
-    icon: RiCoupon3Line,
-    href: "/admin/promotions",
-    badge: null,
-  },
-  {
-    title: "Notifications",
-    icon: RiNotification3Line,
-    href: "/admin/notifications",
-    badge: "3",
-  },
-  {
-    title: "Settings",
-    icon: RiSettings4Line,
-    href: "/admin/settings",
-    badge: null,
-  },
 ];
 
 export default function AdminSidebar({

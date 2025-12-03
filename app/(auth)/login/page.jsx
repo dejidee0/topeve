@@ -78,7 +78,9 @@ export default function SignInPage() {
             {/* Logo & Title */}
             <motion.div variants={fadeIn} className="text-center mb-10">
               <Link href="/" className="inline-block mb-6">
-                <h1 className="font-heading text-4xl text-brand">Topeve</h1>
+                <h1 className="font-heading text-4xl text-brand tracking-tight hover:text-gold transition-colors">
+                  Topeve
+                </h1>
               </Link>
               <h2 className="font-heading text-3xl text-brand mb-2">
                 Welcome Back
@@ -231,7 +233,7 @@ export default function SignInPage() {
           <div className="absolute inset-0 bg-linear-to-br from-brand/80 to-gold/60 opacity-45" />
 
           {/* Overlay Content */}
-          <div className="relative z-10 h-full flex flex-col justify-center px-16 text-white">
+          <div className="relative z-50 h-full flex flex-col justify-center px-16 text-white">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}

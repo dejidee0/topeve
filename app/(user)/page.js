@@ -1,4 +1,3 @@
-// app/page.jsx
 import { Suspense } from "react";
 import Hero from "@/components/shared/home/hero";
 import BentoGrid from "@/components/shared/home/bento";
@@ -114,11 +113,6 @@ export default async function HomePage() {
   // Fetch featured products server-side
   const { data: featuredProducts, error } = await getFeaturedProducts({
     limit: 8,
-  });
-
-  console.log("🏠 [HomePage] Featured products:", {
-    count: featuredProducts?.length || 0,
-    hasError: !!error,
   });
 
   return (

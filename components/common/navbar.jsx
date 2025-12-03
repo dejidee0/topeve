@@ -18,20 +18,30 @@ import {
   X,
   ChevronRight,
   ChevronDown,
+  LogOut,
+  Package,
+  Settings,
+  UserCircle2,
 } from "lucide-react";
-import { useCartStore } from "@/lib/store";
+import { useCartStore, useAuthStore } from "@/lib/store";
 
 export default function Navbar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [readyToWearOpen, setReadyToWearOpen] = useState(false);
+  const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const router = useRouter();
 
   // Cart store
   const getTotalItems = useCartStore((state) => state.getTotalItems);
   const openCart = useCartStore((state) => state.openCart);
   const totalItems = getTotalItems();
+
+  // Auth store
+  const { user, isAuthenticated, signOut } = useAuthStore();
+  const isUserAuthenticated = isAuthenticated();
 
   const { scrollY } = useScroll();
   const bgOpacity = useTransform(scrollY, [0, 200], [1, 0.95]);
@@ -55,10 +65,24 @@ export default function Navbar() {
     { name: "Cosmetics", slug: "cosmetics" },
   ];
 
+  // Fix hydration error
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   useEffect(() => {
     if (sidebarOpen) document.body.style.overflow = "hidden";
     else document.body.style.overflow = "auto";
   }, [sidebarOpen]);
+
+  // Close account menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      if (accountMenuOpen) setAccountMenuOpen(false);
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [accountMenuOpen]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -80,6 +104,23 @@ export default function Navbar() {
     );
     setSidebarOpen(false);
     setReadyToWearOpen(false);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    setAccountMenuOpen(false);
+    router.push("/");
+  };
+
+  // Get user's first name or email
+  const getUserDisplayName = () => {
+    if (!user) return "";
+    // Try to get first name from user metadata
+    const firstName = user.user_metadata?.first_name;
+    if (firstName) return firstName;
+    // Fallback to email username
+    const email = user.email || "";
+    return email.split("@")[0];
   };
 
   return (
@@ -138,7 +179,7 @@ export default function Navbar() {
               aria-label="Open shopping cart"
             >
               <ShoppingCart size={22} />
-              {totalItems > 0 && (
+              {isClient && totalItems > 0 && (
                 <motion.span
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
@@ -149,14 +190,102 @@ export default function Navbar() {
               )}
             </button>
 
-            {/* Account Link */}
-            <Link
-              href="/account"
-              className="hidden md:block text-brand hover:text-gold transition-colors"
-              aria-label="My account"
-            >
-              <User size={22} />
-            </Link>
+            {/* Account - Desktop */}
+            {isClient && isUserAuthenticated ? (
+              <div className="hidden md:block relative">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setAccountMenuOpen(!accountMenuOpen);
+                  }}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand/10 hover:bg-brand/20 transition-colors"
+                  aria-label="Account menu"
+                >
+                  <div className="w-7 h-7 rounded-full bg-brand text-cream flex items-center justify-center text-sm font-semibold">
+                    {getUserDisplayName().charAt(0).toUpperCase()}
+                  </div>
+                  <span className="text-sm font-medium text-brand max-w-[100px] truncate">
+                    {getUserDisplayName()}
+                  </span>
+                  <ChevronDown
+                    size={14}
+                    className={`text-brand transition-transform ${
+                      accountMenuOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {/* Account Dropdown */}
+                <AnimatePresence>
+                  {accountMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-taupe/20 overflow-hidden z-50"
+                    >
+                      {/* User Info Header */}
+                      <div className="px-4 py-3 border-b border-taupe/20 bg-cream/50">
+                        <div className="text-xs text-charcoal/60 mb-1">
+                          Signed in as
+                        </div>
+                        <div className="text-sm font-semibold text-brand truncate">
+                          {user?.email}
+                        </div>
+                      </div>
+
+                      {/* Menu Items */}
+                      <div className="py-2">
+                        <Link
+                          href="/account"
+                          onClick={() => setAccountMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-charcoal/80 hover:bg-taupe/10 hover:text-brand transition-colors"
+                        >
+                          <UserCircle2 size={18} />
+                          <span>My Profile</span>
+                        </Link>
+                        <Link
+                          href="/account?tab=orders"
+                          onClick={() => setAccountMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-charcoal/80 hover:bg-taupe/10 hover:text-brand transition-colors"
+                        >
+                          <Package size={18} />
+                          <span>My Orders</span>
+                        </Link>
+                        <Link
+                          href="/account?tab=address"
+                          onClick={() => setAccountMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-2.5 text-sm text-charcoal/80 hover:bg-taupe/10 hover:text-brand transition-colors"
+                        >
+                          <Settings size={18} />
+                          <span>Settings</span>
+                        </Link>
+                      </div>
+
+                      {/* Sign Out */}
+                      <div className="border-t border-taupe/20 py-2">
+                        <button
+                          onClick={handleSignOut}
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                        >
+                          <LogOut size={18} />
+                          <span>Sign Out</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ) : (
+              <Link
+                href="/auth/signin"
+                className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-brand text-cream hover:bg-gold hover:text-brand transition-colors text-sm font-semibold"
+              >
+                <User size={18} />
+                <span>Sign In</span>
+              </Link>
+            )}
           </div>
         </div>
 
@@ -176,7 +305,7 @@ export default function Navbar() {
                   <span className="absolute left-0 -bottom-1 w-0 group-hover:w-full h-px bg-gold transition-all duration-300"></span>
 
                   {/* Dropdown Menu */}
-                  <div className="absolute top-full left-0 mt-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  <div className="absolute top-full left-0 mt-2 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-300 z-50">
                     <div className="bg-white rounded-xl shadow-lg border border-taupe/20 p-2 min-w-[180px]">
                       {cat.subcategories.map((sub) => (
                         <button
@@ -242,6 +371,32 @@ export default function Navbar() {
                     <X size={22} className="text-brand" />
                   </button>
                 </div>
+
+                {/* User Info - Mobile */}
+                {isClient && isUserAuthenticated && (
+                  <div className="mb-6 p-4 bg-white rounded-xl border border-taupe/20">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-full bg-brand text-cream flex items-center justify-center text-lg font-semibold">
+                        {getUserDisplayName().charAt(0).toUpperCase()}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-semibold text-brand truncate">
+                          {getUserDisplayName()}
+                        </div>
+                        <div className="text-xs text-charcoal/60 truncate">
+                          {user?.email}
+                        </div>
+                      </div>
+                    </div>
+                    <Link
+                      href="/account"
+                      onClick={() => setSidebarOpen(false)}
+                      className="block w-full py-2 text-center text-sm font-medium text-brand hover:text-gold transition-colors"
+                    >
+                      View Profile
+                    </Link>
+                  </div>
+                )}
 
                 {/* Search on mobile */}
                 <form
@@ -320,14 +475,16 @@ export default function Navbar() {
 
                 {/* Bottom Links */}
                 <div className="mt-6 border-t border-taupe/20 pt-4 space-y-2">
-                  <Link
-                    href="/account"
-                    className="flex items-center gap-3 py-3 px-4 text-brand hover:bg-taupe/10 rounded-lg transition-colors"
-                    onClick={() => setSidebarOpen(false)}
-                  >
-                    <User size={18} />
-                    <span className="font-medium">My Account</span>
-                  </Link>
+                  {isClient && !isUserAuthenticated && (
+                    <Link
+                      href="/auth/signin"
+                      className="flex items-center justify-center gap-2 py-3 px-4 bg-brand text-cream rounded-lg hover:bg-gold hover:text-brand transition-colors font-semibold"
+                      onClick={() => setSidebarOpen(false)}
+                    >
+                      <User size={18} />
+                      <span>Sign In</span>
+                    </Link>
+                  )}
 
                   {/* Cart Link with Badge */}
                   <button
@@ -341,12 +498,26 @@ export default function Navbar() {
                       <ShoppingCart size={18} />
                       <span className="font-medium">My Cart</span>
                     </div>
-                    {totalItems > 0 && (
+                    {isClient && totalItems > 0 && (
                       <span className="bg-gold text-brand text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
                         {totalItems > 9 ? "9+" : totalItems}
                       </span>
                     )}
                   </button>
+
+                  {/* Sign Out - Mobile */}
+                  {isClient && isUserAuthenticated && (
+                    <button
+                      onClick={() => {
+                        setSidebarOpen(false);
+                        handleSignOut();
+                      }}
+                      className="w-full flex items-center gap-3 py-3 px-4 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    >
+                      <LogOut size={18} />
+                      <span className="font-medium">Sign Out</span>
+                    </button>
+                  )}
                 </div>
               </div>
             </motion.aside>

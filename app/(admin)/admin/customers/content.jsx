@@ -327,9 +327,6 @@ export default function CustomersPageContent() {
                   <th className="px-6 py-4 text-left text-xs font-semibold text-charcoal-900 uppercase tracking-wider">
                     Last Order
                   </th>
-                  <th className="px-6 py-4 text-right text-xs font-semibold text-charcoal-900 uppercase tracking-wider">
-                    Actions
-                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-cream-200">
@@ -412,17 +409,6 @@ export default function CustomersPageContent() {
                         <span className="text-sm text-charcoal-900">
                           {formatDate(customer.last_order)}
                         </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center justify-end">
-                        <button
-                          onClick={() => handleViewCustomer(customer)}
-                          className="p-2 text-taupe-600 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-all"
-                          title="View Details"
-                        >
-                          <RiEyeLine className="text-lg" />
-                        </button>
                       </div>
                     </td>
                   </motion.tr>
