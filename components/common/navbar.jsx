@@ -321,11 +321,18 @@ export default function Navbar() {
                   >
                     {cat.name}
                   </button>
+
                   <span className="absolute left-0 -bottom-1 w-0 group-hover:w-full h-px bg-gold transition-all duration-300"></span>
                 </>
               )}
             </div>
           ))}
+          <Link href="/about-us">
+            <span className="text-charcoal/80 hover:text-brand transition-colors">
+              {" "}
+              About Us
+            </span>
+          </Link>
         </div>
       </motion.nav>
 

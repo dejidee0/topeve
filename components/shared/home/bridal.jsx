@@ -110,7 +110,7 @@ const BridalShower = () => {
             {/* Secondary Image - Small overlay */}
             <div className="absolute -bottom-8 -left-8 w-48 h-64 rounded-2xl overflow-hidden shadow-2xl border-4 border-white hidden lg:block">
               <Image
-                src="https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=800&q=80"
+                src="https://images.unsplash.com/photo-1645827042168-4fb0cdd0bf7e?q=80&w=685&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 alt="Bridal detail shot"
                 fill
                 sizes="192px"

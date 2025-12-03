@@ -33,7 +33,7 @@ export default function ResetPasswordPage() {
 
     if (!token || type !== "recovery") {
       showNotification("Invalid or expired reset link", "error");
-      setTimeout(() => router.push("/auth/forgot-password"), 3000);
+      setTimeout(() => router.push("/forgot-password"), 3000);
     }
   }, [searchParams, router, showNotification]);
 
