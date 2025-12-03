@@ -153,7 +153,7 @@ export default function ProductCard({ product }) {
         )}
 
         {/* Wishlist Button */}
-        <button
+        {/* <button
           onClick={handleWishlist}
           aria-label={
             isWishlisted
@@ -170,7 +170,7 @@ export default function ProductCard({ product }) {
                 : "text-charcoal/70 hover:text-brand"
             }`}
           />
-        </button>
+        </button> */}
 
         {/* Quick View Button - Shows on Hover */}
         <AnimatePresence>
@@ -238,7 +238,7 @@ export default function ProductCard({ product }) {
         {/* Price & Add to Cart */}
         <div className="flex items-center justify-between pt-3 border-t border-taupe/20 mt-auto">
           <div>
-            <div className="text-xl md:text-2xl font-bold text-brand">
+            <div className="text-base text-wrap md:text-2xl font-bold text-brand">
               {formatPrice(product.price, product.currency || "NGN")}
             </div>
             {product.stock_quantity !== undefined &&

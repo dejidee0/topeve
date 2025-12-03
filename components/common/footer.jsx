@@ -20,7 +20,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-cream border-t border-taupe/20 text-charcoal pt-16 pb-8 px-6 md:px-10 lg:px-20">
+    <footer className="bg-cream border-t border-taupe/70 text-charcoal pt-16 pb-8 px-6 md:px-10 lg:px-20">
       {/* Top Grid */}
       <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-10">
         {/* Brand Section */}
