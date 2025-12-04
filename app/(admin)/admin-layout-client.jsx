@@ -17,7 +17,8 @@ export default function AdminLayoutClient({ children }) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [customerData, setCustomerData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(null); // Changed from false to null
+  const [checkComplete, setCheckComplete] = useState(false); // New state to track completion
 
   // Check authentication and fetch customer profile
   useEffect(() => {
@@ -29,6 +30,12 @@ export default function AdminLayoutClient({ children }) {
       if (!isAuthenticated()) {
         console.log("⚠️ [Admin] User not authenticated, redirecting to login");
         router.push("/login?redirect=/admin");
+        return;
+      }
+
+      // Check if user object exists before accessing properties
+      if (!user || !user.id) {
+        console.log("⚠️ [Admin] User object not ready yet, waiting...");
         return;
       }
 
@@ -46,6 +53,8 @@ export default function AdminLayoutClient({ children }) {
 
         if (error) {
           console.error("❌ [Admin] Error fetching customer:", error);
+          setIsAdmin(false);
+          setCheckComplete(true);
           setLoading(false);
           return;
         }
@@ -65,7 +74,9 @@ export default function AdminLayoutClient({ children }) {
         }
       } catch (error) {
         console.error("❌ [Admin] Error checking admin access:", error);
+        setIsAdmin(false);
       } finally {
+        setCheckComplete(true);
         setLoading(false);
       }
     };
@@ -85,8 +96,8 @@ export default function AdminLayoutClient({ children }) {
     setIsMobileSidebarOpen(false);
   };
 
-  // Loading state
-  if (authLoading || loading) {
+  // Loading state - show while checking authentication and admin status
+  if (authLoading || loading || !checkComplete || isAdmin === null) {
     return (
       <div className="min-h-screen bg-cream flex items-center justify-center">
         <div className="text-center">
@@ -99,8 +110,8 @@ export default function AdminLayoutClient({ children }) {
     );
   }
 
-  // Unauthorized access - not an admin
-  if (!isAdmin) {
+  // Unauthorized access - not an admin (only show after check is complete)
+  if (checkComplete && isAdmin === false) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-cream via-cream to-taupe/20 flex items-center justify-center px-4">
         <motion.div
@@ -186,7 +197,7 @@ export default function AdminLayoutClient({ children }) {
     );
   }
 
-  // Authorized - render admin layout
+  // Authorized - render admin layout (only when isAdmin === true)
   return (
     <div className="min-h-screen bg-cream-50">
       {/* Single Responsive Sidebar */}

@@ -40,11 +40,6 @@ export default function AdminHeader({
 
           {/* Topeve Logo - Visible on Mobile */}
           <Link href="/" className="lg:hidden flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-600 to-gold-500 flex items-center justify-center shadow-md">
-              <span className="text-white font-playfair font-bold text-lg">
-                T
-              </span>
-            </div>
             <span className="font-playfair font-bold text-xl text-charcoal-900">
               Topeve
             </span>

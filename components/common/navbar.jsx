@@ -22,6 +22,7 @@ import {
   Package,
   Settings,
   UserCircle2,
+  Users,
 } from "lucide-react";
 import { useCartStore, useAuthStore } from "@/lib/store";
 
@@ -503,6 +504,15 @@ export default function Navbar() {
                       </span>
                     )}
                   </button>
+                  <Link href="/about-us">
+                    {" "}
+                    <button className="w-full flex items-center justify-between py-3 px-4 text-brand hover:bg-taupe/10 rounded-lg transition-colors">
+                      <div className="flex items-center gap-3">
+                        <Users size={18} />
+                        <span className="font-medium">About Us</span>
+                      </div>
+                    </button>
+                  </Link>
 
                   {/* Sign Out - Mobile */}
                   {isClient && isUserAuthenticated && (

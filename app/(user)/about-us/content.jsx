@@ -198,7 +198,7 @@ export default function AboutContent() {
                 {/* Bottom Right */}
                 <div className="relative h-48 rounded-3xl overflow-hidden shadow-xl">
                   <Image
-                    src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&q=80"
+                    src="https://images.unsplash.com/photo-1493655161922-ef98929de9d8?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="Luxury Accessories"
                     fill
                     className="object-cover"
