@@ -5,6 +5,7 @@ import Navbar from "@/components/common/navbar";
 import Footer from "@/components/common/footer";
 import CartSidebar from "@/components/shared/cart/sidebar";
 import AuthProvider from "@/components/providers/AuthProvider";
+import { QueryProvider } from "@/components/providers/QueryProvider";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -30,12 +31,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${playfair.variable} ${montserrat.variable}`}>
       <body className="bg-cream text-charcoal font-body">
-        <AuthProvider>
-          <Navbar />
-          <main className="md:pt-28 pt-14">{children}</main>
-          <Footer />
-          <CartSidebar />
-        </AuthProvider>
+        <QueryProvider>
+          <AuthProvider>
+            <Navbar />
+            <main className="md:pt-28 pt-14">{children}</main>
+            <Footer />
+            <CartSidebar />
+          </AuthProvider>
+        </QueryProvider>
       </body>
     </html>
   );
