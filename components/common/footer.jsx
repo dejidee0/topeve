@@ -31,7 +31,7 @@ export default function Footer() {
           className="space-y-4"
         >
           <h2 className="font-heading text-2xl tracking-tight text-brand">
-            Topeve
+            Topevekreation
           </h2>
           <p className="text-sm text-charcoal/70 leading-relaxed max-w-xs">
             Where timeless style meets contemporary elegance. Curating fashion
@@ -105,11 +105,11 @@ export default function Footer() {
         {/* Contact Info */}
         <div className="flex flex-col sm:flex-row items-center gap-3">
           <span className="flex items-center gap-2">
-            <Mail size={14} /> support@topeve.com
+            <Mail size={14} />Topevekreation@gmail.com
           </span>
           <span className="hidden sm:inline text-taupe/50">|</span>
           <span className="flex items-center gap-2">
-            <Phone size={14} /> +234 800 123 4567
+            <Phone size={14} /> +234 8163268646, +234 9034724519
           </span>
           <span className="hidden sm:inline text-taupe/50">|</span>
           <span className="flex items-center gap-2">
@@ -119,7 +119,7 @@ export default function Footer() {
 
         {/* Copyright */}
         <p className="text-center md:text-right text-xs md:text-sm text-charcoal/70">
-          © {new Date().getFullYear()} Topeve. All rights reserved.
+          © {new Date().getFullYear()} Topevekreation. All rights reserved.
         </p>
       </div>
     </footer>
