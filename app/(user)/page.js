@@ -35,10 +35,10 @@ export const metadata = {
     siteName: "Topevekreation",
     images: [
       {
-        url: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80",
+        url: "/og-default.svg",
         width: 1200,
         height: 630,
-        alt: "Topevekreation Luxury Fashion",
+        alt: "Topevekreation — Luxury Fashion Nigeria",
       },
     ],
     locale: "en_NG",
@@ -60,27 +60,56 @@ export const metadata = {
   },
 };
 
-// JSON-LD Structured Data
+// JSON-LD Structured Data — WebSite + Organization (combined graph)
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: "Topevekreation",
-  url: "https://topevekreation.com",
-  description:
-    "Luxury fashion e-commerce platform featuring premium ready-to-wear, bridal collections, beauty products, and accessories in Nigeria.",
-  potentialAction: {
-    "@type": "SearchAction",
-    target: "https://topevekreation.com/products?search={search_term_string}",
-    "query-input": "required name=search_term_string",
-  },
-  publisher: {
-    "@type": "Organization",
-    name: "Topevekreation",
-    logo: {
-      "@type": "ImageObject",
-      url: "https://topevekreation.com/logo.png",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://topevekreation.com/#website",
+      name: "Topevekreation",
+      url: "https://topevekreation.com",
+      description:
+        "Luxury fashion e-commerce platform featuring premium ready-to-wear, bridal collections, beauty products, and accessories in Nigeria.",
+      inLanguage: "en-NG",
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: "https://topevekreation.com/products?search={search_term_string}",
+        },
+        "query-input": "required name=search_term_string",
+      },
+      publisher: { "@id": "https://topevekreation.com/#organization" },
     },
-  },
+    {
+      "@type": "Organization",
+      "@id": "https://topevekreation.com/#organization",
+      name: "Topevekreation",
+      url: "https://topevekreation.com",
+      logo: {
+        "@type": "ImageObject",
+        "@id": "https://topevekreation.com/#logo",
+        url: "https://topevekreation.com/logo.svg",
+        contentUrl: "https://topevekreation.com/logo.svg",
+        width: 320,
+        height: 80,
+        caption: "Topevekreation",
+      },
+      image: { "@id": "https://topevekreation.com/#logo" },
+      description:
+        "Topevekreation is a Nigerian luxury fashion brand offering premium ready-to-wear, bridal collections, beauty products, and accessories.",
+      foundingLocation: {
+        "@type": "Place",
+        addressCountry: "NG",
+        addressRegion: "Lagos",
+      },
+      sameAs: [
+        "https://www.instagram.com/topevekreation",
+        "https://twitter.com/topevekreation",
+      ],
+    },
+  ],
 };
 
 // Loading fallback component

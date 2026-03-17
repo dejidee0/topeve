@@ -144,7 +144,7 @@ export default async function ProductPage({ params }) {
       url: `https://topevekreation.com/products/${product.slug}`,
       priceCurrency: product.currency || "NGN",
       price: priceInNGN,
-      priceValidUntil: "2025-12-31",
+      priceValidUntil: "2026-12-31",
       itemCondition: "https://schema.org/NewCondition",
       availability: product.in_stock
         ? "https://schema.org/InStock"
@@ -169,6 +169,32 @@ export default async function ProductPage({ params }) {
     category: product.category,
   };
 
+  // BreadcrumbList structured data
+  const breadcrumbData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: "https://topevekreation.com",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Products",
+        item: "https://topevekreation.com/products",
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.name,
+        item: `https://topevekreation.com/products/${product.slug}`,
+      },
+    ],
+  };
+
   console.log("📊 [ProductPage] Structured data generated for:", product.name);
 
   return (
@@ -177,6 +203,10 @@ export default async function ProductPage({ params }) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbData) }}
       />
 
       <Suspense

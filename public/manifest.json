@@ -1,0 +1,20 @@
+{
+  "name": "Topevekreation — Modern Luxury Fashion",
+  "short_name": "Topevekreation",
+  "description": "Luxury fashion, bridal collections, beauty and premium accessories for the modern Nigerian woman.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5efe8",
+  "theme_color": "#5b3a2e",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "en-NG",
+  "categories": ["shopping", "lifestyle"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ]
+}
