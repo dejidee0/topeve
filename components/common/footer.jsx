@@ -106,7 +106,7 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row items-center gap-3">
           <span className="flex items-center gap-2">
             <Mail size={14} />
-            Topevekreation@gmail.com
+            topevefashionmore@gmail.com
           </span>
           <span className="hidden sm:inline text-taupe/50">|</span>
           <span className="flex items-center gap-2">

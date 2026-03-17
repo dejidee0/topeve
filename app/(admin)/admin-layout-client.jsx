@@ -11,7 +11,7 @@ import AdminHeader from "@/components/common/admin/navbar";
 
 export default function AdminLayoutClient({ children }) {
   const router = useRouter();
-  const { user, isAuthenticated, loading: authLoading } = useAuthStore();
+  const { user, isAuthenticated, loading: authLoading, signOut } = useAuthStore();
 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -205,6 +205,8 @@ export default function AdminLayoutClient({ children }) {
         desktopOpen={sidebarOpen}
         mobileOpen={isMobileSidebarOpen}
         onCloseMobile={closeMobileSidebar}
+        user={user}
+        onSignOut={signOut}
       />
 
       {/* Mobile Overlay Backdrop */}
@@ -231,10 +233,12 @@ export default function AdminLayoutClient({ children }) {
           sidebarOpen={sidebarOpen}
           toggleSidebar={toggleSidebar}
           toggleMobileSidebar={toggleMobileSidebar}
+          user={user}
+          onSignOut={signOut}
         />
 
         {/* Page Content */}
-        <main className="pt-20 px-4 sm:px-6 lg:px-8 pb-8">
+        <main className="pt-16 px-4 sm:px-6 lg:px-8 pb-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
