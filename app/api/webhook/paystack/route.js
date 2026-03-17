@@ -10,8 +10,6 @@ export async function POST(request) {
     const headersList = await headers();
     const signature = headersList.get("x-paystack-signature");
 
-    console.log("📨 Webhook received");
-
     // Verify webhook signature
     const hash = crypto
       .createHmac("sha512", process.env.PAYSTACK_SECRET_KEY)
@@ -24,13 +22,10 @@ export async function POST(request) {
     }
 
     const event = JSON.parse(body);
-    console.log("📨 Event type:", event.event);
 
     // Handle charge.success event
     if (event.event === "charge.success") {
       const { reference, amount, customer, status } = event.data;
-
-      console.log("✅ Payment successful webhook:", reference);
 
       const supabase = await createClient();
 
@@ -42,13 +37,11 @@ export async function POST(request) {
         .single();
 
       if (findError || !order) {
-        console.error("❌ Order not found for reference:", reference);
         return NextResponse.json({ error: "Order not found" }, { status: 404 });
       }
 
       // Check if already processed
       if (order.payment_status === "paid") {
-        console.log("ℹ️ Order already marked as paid:", reference);
         return NextResponse.json({
           success: true,
           message: "Already processed",
@@ -72,8 +65,6 @@ export async function POST(request) {
         return NextResponse.json({ error: "Update failed" }, { status: 500 });
       }
 
-      console.log("✅ Order updated to paid:", order.order_number);
-
       // Send confirmation email (fire and forget)
       if (order.customer_email) {
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/send-order-email`, {
@@ -92,7 +83,6 @@ export async function POST(request) {
     }
 
     // Handle other events
-    console.log("ℹ️ Unhandled event type:", event.event);
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error("❌ Webhook error:", error);

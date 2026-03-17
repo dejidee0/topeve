@@ -78,7 +78,6 @@ export default function DashboardContent() {
 
   const fetchDashboardData = async () => {
     setLoading(true);
-    console.log("📊 Fetching dashboard data...");
 
     try {
       // Fetch products
@@ -233,7 +232,6 @@ export default function DashboardContent() {
 
       setLowStockProducts(lowStock || []);
 
-      console.log("✅ Dashboard data loaded");
     } catch (error) {
       console.error("❌ Error fetching dashboard data:", error);
     } finally {

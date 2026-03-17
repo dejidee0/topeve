@@ -256,6 +256,15 @@ export default function Navbar() {
 
         {/* Bottom Categories (Desktop only) */}
         <div className="hidden md:flex justify-center gap-8 py-3 border-t border-taupe/10 text-sm font-medium">
+          <div className="relative group">
+            <Link
+              href="/products"
+              className="text-charcoal/70 hover:text-brand transition-colors font-semibold"
+            >
+              Shop All
+            </Link>
+            <span className="absolute left-0 -bottom-1 w-0 group-hover:w-full h-px bg-gold transition-all duration-300"></span>
+          </div>
           {mainCategories.map((cat) => (
             <div key={cat.slug} className="relative group">
               {cat.hasSubmenu ? (
@@ -396,6 +405,14 @@ export default function Navbar() {
                 )}
 
                 <div className="flex-1 overflow-y-auto -mx-2 px-2 space-y-1">
+                  <Link
+                    href="/products"
+                    onClick={() => setSidebarOpen(false)}
+                    className="w-full flex items-center justify-between py-3 px-4 text-brand bg-gold/10 hover:bg-gold/20 rounded-lg transition-colors"
+                  >
+                    <span className="font-semibold">Shop All</span>
+                    <ChevronRight size={16} />
+                  </Link>
                   {mainCategories.map((cat) => (
                     <div key={cat.slug}>
                       {cat.hasSubmenu ? (

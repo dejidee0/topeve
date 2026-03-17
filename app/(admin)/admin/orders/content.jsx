@@ -32,7 +32,6 @@ export default function OrdersPageContent() {
   }, [selectedStatus]);
 
   const fetchOrders = async () => {
-    console.log("📋 Fetching orders...");
     setLoading(true);
 
     const filters = {};
@@ -42,11 +41,8 @@ export default function OrdersPageContent() {
 
     const { data, error } = await ordersAPI.getAll(filters);
 
-    if (error) {
-      console.error("❌ Error fetching orders:", error);
-    } else {
+    if (!error) {
       setOrders(data || []);
-      console.log(`✅ Loaded ${data?.length || 0} orders`);
     }
 
     setLoading(false);
@@ -69,14 +65,11 @@ export default function OrdersPageContent() {
   };
 
   const handleStatusUpdate = async (orderId, newStatus) => {
-    console.log(`📝 Updating order ${orderId} status to ${newStatus}`);
     const { error } = await ordersAPI.updateStatus(orderId, newStatus);
 
     if (error) {
-      console.error("❌ Error updating status:", error);
       alert("Failed to update order status");
     } else {
-      console.log("✅ Status updated successfully");
       fetchOrders();
       fetchStats();
     }

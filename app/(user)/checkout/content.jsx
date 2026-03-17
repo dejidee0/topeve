@@ -359,7 +359,6 @@ export default function CheckoutPageContent() {
       });
       handler.openIframe();
     } catch (err) {
-      console.error(err);
       toast.error("Something went wrong. Please try again.");
       setStep(1);
     } finally {

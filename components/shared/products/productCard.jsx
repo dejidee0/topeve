@@ -1,94 +1,81 @@
-// components/shared/products/productCard.jsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Heart, ShoppingBag, Eye, Check } from "lucide-react";
+import { ShoppingBag, Eye, Check } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { formatPrice } from "@/utils/products";
 import { useCartStore } from "@/lib/store";
 
+// Format hyphenated slugs → readable label ("ready-to-wear" → "Ready to Wear")
+const formatLabel = (str) =>
+  str
+    ? str
+        .split("-")
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(" ")
+    : "";
+
 export default function ProductCard({ product }) {
   const router = useRouter();
-  const [isWishlisted, setIsWishlisted] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const mountedRef = useRef(true);
 
   // Cart store
   const addItem = useCartStore((state) => state.addItem);
   const openCart = useCartStore((state) => state.openCart);
 
-  const handleWishlist = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsWishlisted(!isWishlisted);
-    // TODO: Implement wishlist persistence
-    console.log("💝 Wishlist toggled:", product.name, !isWishlisted);
-  };
+  // Track mount state to prevent setState after unmount
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  // Guard: render nothing if product data is missing
+  if (!product || !product.slug) return null;
 
   const handleAddToCart = (e) => {
     e.preventDefault();
     e.stopPropagation();
 
-    console.log("🛒 [ProductCard] Add to cart clicked for:", product.name);
+    if (!product.in_stock || isAdding || isAdded) return;
 
-    // Check if product is in stock
-    if (!product.in_stock) {
-      console.warn("⚠️ Product out of stock:", product.name);
-      return;
-    }
-
-    // Check if product requires size selection
+    // Redirect to product page for size selection
     if (product.size?.length > 0) {
-      // Redirect to product page for size selection
-      console.log("📏 Size selection required, redirecting to product page");
       router.push(`/products/${product.slug}`);
       return;
     }
 
     setIsAdding(true);
 
-    // Add to cart
     try {
-      addItem(
-        product,
-        1, // quantity
-        null, // size (not selected from card)
-        product.color || null // color
-      );
-
-      console.log("✅ Added to cart:", product.name);
+      addItem(product, 1, null, product.color || null);
 
       setTimeout(() => {
+        if (!mountedRef.current) return;
         setIsAdding(false);
         setIsAdded(true);
 
-        // Open cart sidebar after a short delay
         setTimeout(() => {
-          openCart();
+          if (mountedRef.current) openCart();
         }, 300);
 
-        // Reset added state
-        setTimeout(() => setIsAdded(false), 2000);
+        setTimeout(() => {
+          if (mountedRef.current) setIsAdded(false);
+        }, 2000);
       }, 800);
     } catch (error) {
       console.error("❌ Error adding to cart:", error);
-      setIsAdding(false);
+      if (mountedRef.current) setIsAdding(false);
     }
   };
 
-  const handleQuickView = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("👁️ [ProductCard] Quick view clicked for:", product.name);
-    router.push(`/products/${product.slug}`);
-  };
-
   const handleCardClick = (e) => {
-    // Don't navigate if clicking on interactive elements
     if (
       e.target.closest("button") ||
       e.target.closest("a[href]") ||
@@ -99,34 +86,52 @@ export default function ProductCard({ product }) {
     router.push(`/products/${product.slug}`);
   };
 
-  const hasBadge =
-    product.tags?.includes("new") || product.tags?.includes("best-seller");
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      router.push(`/products/${product.slug}`);
+    }
+  };
 
-  // Determine button text
   const getButtonText = () => {
     if (!product.in_stock) return "Out of Stock";
     if (product.size?.length > 0) return "Select Size";
     return "Add";
   };
 
+  const displayCategory = formatLabel(product.subcategory || product.category);
+  const price = product.price ?? 0;
+  const stockQty = product.stock_quantity ?? null;
+  const isLowStock = stockQty != null && stockQty <= 5 && stockQty > 0;
+
   return (
     <div
+      role="button"
+      tabIndex={0}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleCardClick}
-      className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-taupe/20 h-full flex flex-col cursor-pointer"
+      onKeyDown={handleKeyDown}
+      aria-label={`View ${product.name}`}
+      className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-taupe/20 h-full flex flex-col cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
     >
       {/* Image Container */}
       <div className="relative aspect-[3/4] overflow-hidden bg-cream/30">
-        <Image
-          src={product.image}
-          alt={product.name}
-          fill
-          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-110"
-          loading="lazy"
-          quality={85}
-        />
+        {product.image ? (
+          <Image
+            src={product.image}
+            alt={product.name}
+            fill
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
+            loading="lazy"
+            quality={85}
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center text-5xl bg-cream/60">
+            📦
+          </div>
+        )}
 
         {/* Gradient Overlay on Hover */}
         <motion.div
@@ -136,9 +141,25 @@ export default function ProductCard({ product }) {
           className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none"
         />
 
+        {/* Out of Stock overlay */}
+        {!product.in_stock && (
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-10">
+            <span className="px-4 py-1.5 bg-white/90 text-brand text-xs font-bold uppercase tracking-widest rounded-full">
+              Out of Stock
+            </span>
+          </div>
+        )}
+
         {/* Badges */}
-        {hasBadge && (
+        {(product.tags?.includes("new") ||
+          product.tags?.includes("best-seller") ||
+          product.featured) && (
           <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
+            {product.featured && (
+              <span className="inline-block px-3 py-1 bg-gold text-brand text-[10px] font-bold uppercase tracking-wider rounded-full shadow-lg">
+                Featured
+              </span>
+            )}
             {product.tags?.includes("new") && (
               <span className="inline-block px-3 py-1 bg-gold text-brand text-[10px] font-bold uppercase tracking-wider rounded-full shadow-lg">
                 New
@@ -152,55 +173,40 @@ export default function ProductCard({ product }) {
           </div>
         )}
 
-        {/* Wishlist Button */}
-        {/* <button
-          onClick={handleWishlist}
-          aria-label={
-            isWishlisted
-              ? `Remove ${product.name} from wishlist`
-              : `Add ${product.name} to wishlist`
-          }
-          className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm rounded-full p-2.5 shadow-lg hover:bg-white hover:scale-110 active:scale-90 transition-all duration-300 z-10"
-        >
-          <Heart
-            size={18}
-            className={`transition-colors duration-300 ${
-              isWishlisted
-                ? "fill-red-500 text-red-500"
-                : "text-charcoal/70 hover:text-brand"
-            }`}
-          />
-        </button> */}
-
-        {/* Quick View Button - Shows on Hover */}
-        <AnimatePresence>
-          {isHovered && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              transition={{ duration: 0.3 }}
-              className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 w-[calc(100%-2rem)]"
-            >
-              <button
-                onClick={handleQuickView}
-                aria-label={`Quick view ${product.name}`}
-                className="w-full flex items-center justify-center gap-2 bg-white/95 backdrop-blur-sm text-brand px-4 py-2.5 rounded-full text-sm font-semibold shadow-lg hover:bg-white transition-all duration-300"
+        {/* Quick View Button — shows on hover, hidden when out of stock */}
+        {product.in_stock && (
+          <AnimatePresence>
+            {isHovered && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.3 }}
+                className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 w-[calc(100%-2rem)]"
               >
-                <Eye size={16} />
-                <span>Quick View</span>
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    router.push(`/products/${product.slug}`);
+                  }}
+                  aria-label={`Quick view ${product.name}`}
+                  className="w-full flex items-center justify-center gap-2 bg-white/95 backdrop-blur-sm text-brand px-4 py-2.5 rounded-full text-sm font-semibold shadow-lg hover:bg-white transition-all duration-300"
+                >
+                  <Eye size={16} />
+                  <span>Quick View</span>
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        )}
       </div>
 
       {/* Product Info */}
       <div className="p-4 flex-1 flex flex-col">
-        {/* Category/Material */}
+        {/* Category / Material */}
         <div className="flex items-center justify-between mb-2">
           <span className="text-[10px] uppercase tracking-wider text-charcoal/60 font-semibold">
-            {product.subcategory || product.category}
+            {displayCategory}
           </span>
           {product.material && (
             <span className="text-[10px] text-charcoal/50 capitalize">
@@ -214,7 +220,7 @@ export default function ProductCard({ product }) {
           {product.name}
         </h3>
 
-        {/* Color & Sizes Info */}
+        {/* Color & Sizes */}
         <div className="space-y-1 mb-3 flex-1">
           {product.color && (
             <div className="flex items-center gap-2">
@@ -239,15 +245,13 @@ export default function ProductCard({ product }) {
         <div className="flex items-center justify-between pt-3 border-t border-taupe/20 mt-auto">
           <div>
             <div className="text-base text-wrap md:text-2xl font-bold text-brand">
-              {formatPrice(product.price, product.currency || "NGN")}
+              {formatPrice(price)}
             </div>
-            {product.stock_quantity !== undefined &&
-              product.stock_quantity <= 5 &&
-              product.stock_quantity > 0 && (
-                <div className="text-[10px] text-red-500 font-medium mt-0.5">
-                  Only {product.stock_quantity} left
-                </div>
-              )}
+            {isLowStock && (
+              <div className="text-[10px] text-red-500 font-medium mt-0.5">
+                Only {stockQty} left
+              </div>
+            )}
           </div>
 
           <button
@@ -258,7 +262,7 @@ export default function ProductCard({ product }) {
                 ? "Product out of stock"
                 : product.size?.length > 0
                 ? "Select size on product page"
-                : "Add to cart"
+                : `Add ${product.name} to cart`
             }
             className={`relative z-10 flex items-center gap-2 px-3 md:px-4 py-2.5 rounded-full text-xs md:text-sm font-semibold transition-all duration-300 shadow-md hover:shadow-lg ${
               !product.in_stock
@@ -290,11 +294,7 @@ export default function ProductCard({ product }) {
                 >
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{
-                      duration: 1,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
+                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                   >
                     <ShoppingBag size={16} />
                   </motion.div>

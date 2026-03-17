@@ -28,20 +28,17 @@ export default function AdminLayoutClient({ children }) {
 
       // Redirect to login if not authenticated
       if (!isAuthenticated()) {
-        console.log("⚠️ [Admin] User not authenticated, redirecting to login");
         router.push("/login?redirect=/admin");
         return;
       }
 
       // Check if user object exists before accessing properties
       if (!user || !user.id) {
-        console.log("⚠️ [Admin] User object not ready yet, waiting...");
         return;
       }
 
       // Fetch customer profile to check role
       try {
-        console.log("🔐 [Admin] Checking admin access for user:", user.id);
         const { createClient } = await import("@/supabase/client");
         const supabase = createClient();
 
@@ -63,13 +60,8 @@ export default function AdminLayoutClient({ children }) {
 
         // Check if user has admin role
         if (data?.role === "admin") {
-          console.log("✅ [Admin] Admin access granted");
           setIsAdmin(true);
         } else {
-          console.log(
-            "⛔ [Admin] Access denied - user role:",
-            data?.role || "none"
-          );
           setIsAdmin(false);
         }
       } catch (error) {

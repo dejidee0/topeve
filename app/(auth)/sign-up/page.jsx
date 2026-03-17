@@ -92,20 +92,13 @@ export default function SignUpPage() {
   }, [formData, agreedToTerms, showNotification]);
 
   const handleSubmit = async () => {
-    console.log("🔵 Form submission started");
-    console.log("📝 Form data:", formData);
-    console.log("✅ Terms agreed:", agreedToTerms);
-
     if (!validateForm()) {
-      console.log("❌ Validation failed");
       return;
     }
 
-    console.log("✅ Validation passed");
     setIsSubmitting(true);
 
     try {
-      console.log("🚀 Calling signUp...");
       const result = await signUp(formData.email, formData.password, {
         first_name: formData.firstName,
         last_name: formData.lastName,
@@ -113,27 +106,20 @@ export default function SignUpPage() {
         gender: formData.gender,
       });
 
-      console.log("📦 SignUp result:", result);
-
       if (result.success) {
         setEmailSent(true);
         showNotification("Verification email sent!", "success");
 
-        // Show warning if customer insert failed
         if (result.warning) {
-          console.warn("⚠️ Warning:", result.warning);
           showNotification(result.warning, "warning");
         }
       } else {
-        console.error("❌ Sign up failed:", result.error);
         showNotification(result.error || "Sign up failed", "error");
       }
     } catch (err) {
-      console.error("❌ Unexpected error:", err);
       showNotification("An unexpected error occurred", "error");
     } finally {
       setIsSubmitting(false);
-      console.log("🏁 Form submission completed");
     }
   };
 

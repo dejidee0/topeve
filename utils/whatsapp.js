@@ -95,7 +95,6 @@ export function sendWhatsAppNotification(phoneNumber, message) {
   // Create WhatsApp link
   const whatsappUrl = `https://wa.me/${fullPhone}?text=${encodedMessage}`;
 
-  console.log("📱 WhatsApp notification URL generated:", whatsappUrl);
 
   return whatsappUrl;
 }

@@ -33,7 +33,7 @@ export const formatPrice = (price) => {
     style: "currency",
     currency: "NGN",
     minimumFractionDigits: 0,
-  }).format(price);
+  }).format(price / 100);
 };
 // =====================================================
 // FETCH ALL PRODUCTS
@@ -77,7 +77,6 @@ export async function getAllProducts(options = {}) {
     return { data: null, error, count: 0 };
   }
 
-  console.log(`✅ Fetched ${data?.length} products (total: ${count})`);
   return { data, error: null, count };
 }
 
@@ -103,7 +102,6 @@ export async function getProductById(id) {
     return { data: null, error };
   }
 
-  console.log(`✅ Fetched product: ${data?.name}`);
   return { data, error: null };
 }
 
@@ -125,7 +123,6 @@ export async function getProductBySlug(slug) {
     return { data: null, error };
   }
 
-  console.log(`✅ Fetched product: ${data?.name}`);
 
   // Increment view count
   await incrementProductViews(data.id);
@@ -151,7 +148,6 @@ export async function getProductBySKU(sku) {
     return { data: null, error };
   }
 
-  console.log(`✅ Fetched product: ${data?.name}`);
   return { data, error: null };
 }
 
@@ -193,7 +189,6 @@ export async function getProductsByCategory(category, options = {}) {
     return { data: null, error, count: 0 };
   }
 
-  console.log(`✅ Fetched ${data?.length} products in category: ${category}`);
   return { data, error: null, count };
 }
 
@@ -240,9 +235,6 @@ export async function getProductsBySubcategory(
     return { data: null, error, count: 0 };
   }
 
-  console.log(
-    `✅ Fetched ${data?.length} products in ${category}/${subcategory}`
-  );
   return { data, error: null, count };
 }
 
@@ -279,7 +271,6 @@ export async function getFeaturedProducts(options = {}) {
     return { data: null, error, count: 0 };
   }
 
-  console.log(`✅ Fetched ${data?.length} featured products`);
   return { data, error: null, count };
 }
 
@@ -321,7 +312,6 @@ export async function getProductsByTag(tag, options = {}) {
     return { data: null, error, count: 0 };
   }
 
-  console.log(`✅ Fetched ${data?.length} products with tag: ${tag}`);
   return { data, error: null, count };
 }
 
@@ -409,7 +399,6 @@ export async function searchProducts(searchTerm, options = {}) {
     return { data: null, error, count: 0 };
   }
 
-  console.log(`✅ Found ${data?.length} products matching "${searchTerm}"`);
   return { data, error: null, count };
 }
 
@@ -507,7 +496,6 @@ export async function filterProducts(filters = {}) {
     return { data: null, error, count: 0 };
   }
 
-  console.log(`✅ Filtered ${data?.length} products (total matches: ${count})`);
   return { data, error: null, count };
 }
 
@@ -570,7 +558,6 @@ export async function getRelatedProducts(
     return { data: null, error };
   }
 
-  console.log(`✅ Fetched ${data?.length} related products`);
   return { data, error: null };
 }
 
@@ -641,7 +628,6 @@ export async function getUniqueCategories() {
   }
 
   const categories = [...new Set(data.map((p) => p.category))];
-  console.log(`✅ Fetched ${categories.length} unique categories`);
   return { data: categories, error: null };
 }
 
@@ -665,9 +651,6 @@ export async function getSubcategoriesByCategory(category) {
   }
 
   const subcategories = [...new Set(data.map((p) => p.subcategory))];
-  console.log(
-    `✅ Fetched ${subcategories.length} subcategories for ${category}`
-  );
   return { data: subcategories, error: null };
 }
 
@@ -689,7 +672,6 @@ export async function getUniqueColors() {
   }
 
   const colors = [...new Set(data.map((p) => p.color))];
-  console.log(`✅ Fetched ${colors.length} unique colors`);
   return { data: colors, error: null };
 }
 
@@ -711,7 +693,6 @@ export async function getUniqueSizes() {
 
   // Flatten all size arrays and get unique values
   const sizes = [...new Set(data.flatMap((p) => p.size || []))];
-  console.log(`✅ Fetched ${sizes.length} unique sizes`);
   return { data: sizes, error: null };
 }
 
@@ -733,7 +714,6 @@ export async function getUniqueMaterials() {
   }
 
   const materials = [...new Set(data.map((p) => p.material))];
-  console.log(`✅ Fetched ${materials.length} unique materials`);
   return { data: materials, error: null };
 }
 
@@ -747,21 +727,24 @@ export async function getUniqueMaterials() {
  * @returns {Promise<{data: Array, error: any}>}
  */
 export async function getLowStockProducts(limit = 10) {
+  // Fetch more than needed so we can filter client-side by each product's own threshold
   const { data, error } = await supabase
     .from("products")
     .select("*")
     .is("deleted_at", null)
-    .lte("stock_quantity", supabase.raw("low_stock_threshold"))
     .order("stock_quantity", { ascending: true })
-    .limit(limit);
+    .limit(limit * 5);
 
   if (error) {
     console.error("❌ Error fetching low stock products:", error);
     return { data: null, error };
   }
 
-  console.log(`✅ Fetched ${data?.length} low stock products`);
-  return { data, error: null };
+  const lowStock = data
+    .filter((p) => p.stock_quantity <= (p.low_stock_threshold ?? 10))
+    .slice(0, limit);
+
+  return { data: lowStock, error: null };
 }
 
 // =====================================================
@@ -784,6 +767,5 @@ export async function getProductCount() {
     return { count: 0, error };
   }
 
-  console.log(`✅ Total products: ${count}`);
   return { count, error: null };
 }

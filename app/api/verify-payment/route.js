@@ -17,8 +17,6 @@ export async function GET(request) {
       );
     }
 
-    console.log("🔍 Verifying payment for reference:", reference);
-
     const supabase = await createClient();
 
     // Check order status in database (webhook should have updated it)
@@ -37,7 +35,6 @@ export async function GET(request) {
       .single();
 
     if (error || !order) {
-      console.error("❌ Order not found:", reference, error);
       return NextResponse.json(
         {
           success: false,
@@ -49,7 +46,6 @@ export async function GET(request) {
 
     // If already paid (webhook processed it), return success
     if (order.payment_status === "paid") {
-      console.log("✅ Payment already verified via webhook:", reference);
       return NextResponse.json({
         success: true,
         order,
@@ -59,8 +55,6 @@ export async function GET(request) {
     }
 
     // Fallback: Verify with Paystack API directly
-    console.log("🔄 Webhook not received yet, checking Paystack API...");
-
     const paystackResponse = await fetch(
       `https://api.paystack.co/transaction/verify/${reference}`,
       {
@@ -71,7 +65,6 @@ export async function GET(request) {
     );
 
     if (!paystackResponse.ok) {
-      console.error("❌ Paystack API error:", paystackResponse.status);
       return NextResponse.json({
         success: false,
         order,
@@ -82,7 +75,6 @@ export async function GET(request) {
     const paystackData = await paystackResponse.json();
 
     if (paystackData.status && paystackData.data.status === "success") {
-      console.log("✅ Payment verified via Paystack API, updating order");
 
       // Update order (webhook might be delayed)
       const { error: updateError } = await supabase
@@ -142,7 +134,6 @@ export async function GET(request) {
     }
 
     // Payment not completed yet
-    console.log("⏳ Payment still pending:", reference);
     return NextResponse.json({
       success: false,
       order,

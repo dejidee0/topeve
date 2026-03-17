@@ -11,7 +11,6 @@ import {
   RiImageLine,
 } from "react-icons/ri";
 import { Upload, Loader2, AlertCircle } from "lucide-react";
-import { productsAPI } from "@/lib/products";
 import Image from "next/image";
 import { createClient } from "@/supabase/client";
 
@@ -156,7 +155,6 @@ export default function ProductModal({ isOpen, onClose, product, mode }) {
     if (!imageFile) return formData.image;
 
     setUploadingImage(true);
-    console.log("📤 Uploading image to Supabase Storage...");
 
     try {
       // Generate unique filename
@@ -184,7 +182,6 @@ export default function ProductModal({ isOpen, onClose, product, mode }) {
         data: { publicUrl },
       } = supabase.storage.from("product-images").getPublicUrl(filePath);
 
-      console.log("✅ Image uploaded successfully:", publicUrl);
       return publicUrl;
     } catch (error) {
       console.error("❌ Error uploading image:", error);
@@ -210,7 +207,6 @@ export default function ProductModal({ isOpen, onClose, product, mode }) {
         // Delete from Supabase Storage
         await supabase.storage.from("product-images").remove([filePath]);
 
-        console.log("🗑️ Image deleted from storage");
       } catch (error) {
         console.error("❌ Error deleting image:", error);
       }
@@ -279,14 +275,10 @@ export default function ProductModal({ isOpen, onClose, product, mode }) {
     e.preventDefault();
 
     if (!validateForm()) {
-      console.warn("⚠️ Form validation failed");
       return;
     }
 
     setLoading(true);
-    console.log(
-      `${mode === "create" ? "📝 Creating" : "✏️ Updating"} product...`
-    );
 
     try {
       // Upload image if new file selected
@@ -307,19 +299,27 @@ export default function ProductModal({ isOpen, onClose, product, mode }) {
         low_stock_threshold: parseInt(formData.low_stock_threshold) || 10,
       };
 
-      let result;
+      let res;
       if (mode === "create") {
-        result = await productsAPI.create(productData);
+        res = await fetch("/api/admin/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(productData),
+        });
       } else {
-        result = await productsAPI.update(product.id, productData);
+        res = await fetch("/api/admin/products", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: product.id, ...productData }),
+        });
       }
 
-      if (result.error) {
+      const result = await res.json();
+      if (!res.ok) {
         console.error("❌ Error:", result.error);
-        throw new Error(result.error.message);
+        throw new Error(result.error || "Failed to save product");
       }
 
-      console.log("✅ Product saved successfully!");
       onClose(true); // true means refresh the list
     } catch (error) {
       console.error("❌ Error:", error);
@@ -391,12 +391,21 @@ export default function ProductModal({ isOpen, onClose, product, mode }) {
                         <div className="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-cream border-2 border-dashed border-taupe/30 mb-3">
                           {imagePreview || formData.image ? (
                             <>
-                              <Image
-                                src={imagePreview || formData.image}
-                                alt="Product preview"
-                                fill
-                                className="object-cover"
-                              />
+                              {imagePreview && imagePreview.startsWith("data:") ? (
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                  src={imagePreview}
+                                  alt="Product preview"
+                                  className="absolute inset-0 w-full h-full object-cover"
+                                />
+                              ) : (
+                                <Image
+                                  src={imagePreview || formData.image}
+                                  alt="Product preview"
+                                  fill
+                                  className="object-cover"
+                                />
+                              )}
                               {!isViewMode && (
                                 <button
                                   type="button"

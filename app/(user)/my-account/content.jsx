@@ -58,9 +58,6 @@ export default function AccountPageContent() {
   // Check authentication
   useEffect(() => {
     if (!authLoading && !isAuthenticated()) {
-      console.log(
-        "⚠️ [Account] User not authenticated, redirecting to sign in"
-      );
       router.push("/login?redirect=/account");
     }
   }, [authLoading, isAuthenticated, router]);
@@ -75,7 +72,6 @@ export default function AccountPageContent() {
 
   const fetchCustomerData = async () => {
     try {
-      console.log("📋 [Account] Fetching customer data...");
       const { createClient } = await import("@/supabase/client");
       const supabase = createClient();
 
@@ -105,9 +101,8 @@ export default function AccountPageContent() {
         gender: data.gender || "",
       });
 
-      console.log("✅ [Account] Customer data loaded");
     } catch (error) {
-      console.error("❌ [Account] Error:", error);
+      // silently fail — user sees empty form
     } finally {
       setLoading(false);
     }
@@ -115,7 +110,6 @@ export default function AccountPageContent() {
 
   const fetchOrders = async () => {
     try {
-      console.log("📦 [Account] Fetching orders...");
       const { data, error } = await ordersAPI.getAll({
         // Filter by customer_id if using auth
         // For now, filter by email since orders might not have customer_id
@@ -131,16 +125,14 @@ export default function AccountPageContent() {
       }
 
       setOrders(data || []);
-      console.log("✅ [Account] Orders loaded:", data?.length || 0);
-    } catch (error) {
-      console.error("❌ [Account] Error:", error);
+    } catch {
+      // silently fail
     }
   };
 
   const handleSave = async () => {
     try {
       setSaving(true);
-      console.log("💾 [Account] Saving customer data...");
 
       const { createClient } = await import("@/supabase/client");
       const supabase = createClient();
@@ -167,12 +159,10 @@ export default function AccountPageContent() {
         return;
       }
 
-      console.log("✅ [Account] Changes saved successfully");
       setIsEditing(false);
       fetchCustomerData();
       alert("Changes saved successfully!");
-    } catch (error) {
-      console.error("❌ [Account] Error:", error);
+    } catch {
       alert("Failed to save changes. Please try again.");
     } finally {
       setSaving(false);

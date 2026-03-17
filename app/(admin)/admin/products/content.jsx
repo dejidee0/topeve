@@ -17,6 +17,7 @@ import {
 } from "react-icons/ri";
 import { Package, TrendingUp, AlertTriangle, DollarSign } from "lucide-react";
 import { productsAPI } from "@/lib/products";
+
 import Image from "next/image";
 import ProductModal from "@/components/shared/admin/products/modal";
 import DeleteConfirmModal from "@/components/shared/admin/products/delete-modal";
@@ -43,8 +44,6 @@ export default function ProductsPageContent() {
       setLoading(true);
     }
 
-    console.log("📦 Fetching products...");
-
     const filters = {};
     if (selectedCategory !== "all") {
       filters.category = selectedCategory;
@@ -56,7 +55,6 @@ export default function ProductsPageContent() {
       console.error("❌ Error fetching products:", error);
     } else {
       setProducts(data || []);
-      console.log(`✅ Loaded ${data?.length || 0} products`);
     }
 
     setLoading(false);
@@ -97,14 +95,15 @@ export default function ProductsPageContent() {
   const confirmDelete = async () => {
     if (!productToDelete) return;
 
-    console.log("🗑️ Deleting product:", productToDelete.id);
-    const { error } = await productsAPI.softDelete(productToDelete.id);
+    const res = await fetch(`/api/admin/products?id=${productToDelete.id}`, {
+      method: "DELETE",
+    });
+    const result = await res.json();
 
-    if (error) {
-      console.error("❌ Error deleting product:", error);
+    if (!res.ok) {
+      console.error("❌ Error deleting product:", result.error);
       alert("Failed to delete product");
     } else {
-      console.log("✅ Product deleted successfully");
       fetchProducts(true);
     }
 

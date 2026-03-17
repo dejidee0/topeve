@@ -28,16 +28,12 @@ export default function CustomersPageContent() {
   const [stats, setStats] = useState(null);
 
   const fetchCustomers = async () => {
-    console.log("👥 Fetching customers...");
     setLoading(true);
 
     const { data, error } = await customersAPI.getAll();
 
-    if (error) {
-      console.error("❌ Error fetching customers:", error);
-    } else {
+    if (!error) {
       setCustomers(data || []);
-      console.log(`✅ Loaded ${data?.length || 0} customers`);
     }
 
     setLoading(false);
@@ -60,9 +56,7 @@ export default function CustomersPageContent() {
         ]);
 
         // Handle customers
-        if (customersResult.error) {
-          console.error("Error fetching customers:", customersResult.error);
-        } else {
+        if (!customersResult.error) {
           setCustomers(customersResult.data || []);
         }
 
@@ -70,8 +64,8 @@ export default function CustomersPageContent() {
         if (statsResult.data) {
           setStats(statsResult.data);
         }
-      } catch (err) {
-        console.error("Unexpected error loading data:", err);
+      } catch {
+        // silently fail
       } finally {
         setLoading(false);
       }
@@ -81,7 +75,6 @@ export default function CustomersPageContent() {
   }, []);
 
   const handleViewCustomer = async (customer) => {
-    console.log("👁️ Viewing customer:", customer.id);
     const { data } = await customersAPI.getById(customer.id);
     if (data) {
       setSelectedCustomer(data);

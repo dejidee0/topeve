@@ -29,17 +29,8 @@ export default function OrderConfirmationContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  console.log("🔍 [OrderConfirmation] Component mounted");
-  console.log("📋 [OrderConfirmation] Reference:", reference);
-  console.log("⚠️ [OrderConfirmation] Has Error:", hasError);
-
   useEffect(() => {
-    console.log("🔄 [OrderConfirmation] useEffect triggered");
-
     if (!reference) {
-      console.warn(
-        "⚠️ [OrderConfirmation] No reference found, redirecting to home"
-      );
       router.push("/");
       return;
     }
@@ -47,24 +38,13 @@ export default function OrderConfirmationContent() {
     // Fetch order details
     const fetchOrderDetails = async () => {
       try {
-        console.log(
-          "🔎 [OrderConfirmation] Fetching order details for:",
-          reference
-        );
         setLoading(true);
 
         const { data, error: fetchError } = await ordersAPI.getByOrderNumber(
           reference
         );
 
-        console.log("📦 [OrderConfirmation] Order data received:", data);
-        console.log("❌ [OrderConfirmation] Fetch error:", fetchError);
-
         if (fetchError) {
-          console.error(
-            "❌ [OrderConfirmation] Error fetching order:",
-            fetchError
-          );
           setError(
             "Unable to load order details. Please check your email for confirmation."
           );
@@ -73,7 +53,6 @@ export default function OrderConfirmationContent() {
         }
 
         if (!data) {
-          console.warn("⚠️ [OrderConfirmation] No order data found");
           setError(
             "Order not found. Please check your email for confirmation."
           );
@@ -81,16 +60,9 @@ export default function OrderConfirmationContent() {
           return;
         }
 
-        console.log("✅ [OrderConfirmation] Order loaded successfully:", {
-          orderNumber: data.order_number,
-          total: data.total,
-          itemCount: data.order_items?.length,
-        });
-
         setOrderData(data);
         setLoading(false);
       } catch (err) {
-        console.error("❌ [OrderConfirmation] Unexpected error:", err);
         setError(
           "An unexpected error occurred. Please check your email for confirmation."
         );
@@ -103,7 +75,6 @@ export default function OrderConfirmationContent() {
 
   // Loading state
   if (loading) {
-    console.log("⏳ [OrderConfirmation] Rendering loading state");
     return (
       <div className="min-h-screen bg-cream pt-24 pb-16">
         <div className="max-w-3xl mx-auto px-6">
@@ -118,7 +89,6 @@ export default function OrderConfirmationContent() {
 
   // Error state
   if (error || hasError) {
-    console.log("❌ [OrderConfirmation] Rendering error state:", error);
     return (
       <div className="min-h-screen bg-cream pt-24 pb-16">
         <div className="max-w-3xl mx-auto px-6">
@@ -164,8 +134,6 @@ export default function OrderConfirmationContent() {
   }
 
   // Success state with order details
-  console.log("✅ [OrderConfirmation] Rendering success state with order data");
-
   return (
     <div className="min-h-screen bg-cream pt-24 pb-16">
       <div className="max-w-4xl mx-auto px-6">
@@ -346,7 +314,6 @@ export default function OrderConfirmationContent() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => {
-                console.log("🖨️ [OrderConfirmation] Print button clicked");
                 window.print();
               }}
               className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-brand text-brand rounded-full hover:bg-brand hover:text-cream transition-all duration-300 font-semibold"

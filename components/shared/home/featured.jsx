@@ -29,7 +29,6 @@ const Featured = ({ products = [] }) => {
   const addItem = useCartStore((state) => state.addItem);
   const openCart = useCartStore((state) => state.openCart);
 
-  console.log("✨ [Featured] Rendering with products:", products.length);
 
   const handleAddToCart = (e, product) => {
     e.preventDefault();
@@ -43,7 +42,6 @@ const Featured = ({ products = [] }) => {
 
     // Check if product requires size selection
     if (product.size?.length > 0) {
-      console.log("📏 Size selection required, redirecting to product page");
       router.push(`/products/${product.slug}`);
       return;
     }
@@ -51,7 +49,6 @@ const Featured = ({ products = [] }) => {
     // Add to cart
     try {
       addItem(product, 1, null, product.color || null);
-      console.log("✅ Added to cart from featured:", product.name);
 
       // Open cart after a short delay
       setTimeout(() => {

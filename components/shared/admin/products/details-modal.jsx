@@ -12,9 +12,6 @@ export default function ProductModal({ isOpen, onClose, product, mode }) {
   const handleSubmit = async (productData) => {
     setLoading(true);
 
-    console.log(
-      `${mode === "create" ? "📝 Creating" : "✏️ Updating"} product...`
-    );
 
     let result;
     if (mode === "create") {
@@ -29,7 +26,6 @@ export default function ProductModal({ isOpen, onClose, product, mode }) {
       console.error("❌ Error:", result.error);
       alert(`Failed to ${mode} product: ${result.error.message}`);
     } else {
-      console.log("✅ Product saved successfully!");
       onClose(true); // true means refresh the list
     }
   };

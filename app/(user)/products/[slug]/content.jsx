@@ -53,10 +53,6 @@ export default function ProductPageContent({ product }) {
 
       if (!error && data) {
         setRelatedProducts(data);
-        console.log("🔗 [ProductPageContent] Related products loaded:", {
-          count: data.length,
-          products: data.map((p) => p.name),
-        });
       }
     }
 
@@ -64,13 +60,6 @@ export default function ProductPageContent({ product }) {
   }, [product.id, product.category, product.tags]);
 
   const handleAddToCart = () => {
-    console.log("🛒 [ProductPageContent] Add to cart clicked:", {
-      productId: product.id,
-      selectedSize,
-      quantity,
-      needsSize: product.size?.length > 0,
-    });
-
     // Validation: Check size selection
     if (product.size?.length > 0 && !selectedSize) {
       alert("Please select a size");
@@ -98,13 +87,6 @@ export default function ProductPageContent({ product }) {
       // Add to cart
       addItem(product, quantity, selectedSize, product.color || null);
 
-      console.log("✅ [ProductPageContent] Added to cart successfully:", {
-        name: product.name,
-        quantity,
-        size: selectedSize,
-        color: product.color,
-      });
-
       setTimeout(() => {
         setIsAdding(false);
         setIsAdded(true);
@@ -125,8 +107,6 @@ export default function ProductPageContent({ product }) {
   };
 
   const handleShare = async () => {
-    console.log("📤 [ProductPageContent] Share clicked");
-
     if (navigator.share) {
       try {
         await navigator.share({
@@ -134,23 +114,18 @@ export default function ProductPageContent({ product }) {
           text: `Check out ${product.name} on Topevekreation`,
           url: window.location.href,
         });
-        console.log(
-          "✅ [ProductPageContent] Shared successfully via Web Share API",
-        );
       } catch (err) {
-        console.log("⚠️ [ProductPageContent] Share cancelled or failed:", err);
+        // share cancelled or failed silently
       }
     } else {
       // Fallback: copy to clipboard
       navigator.clipboard.writeText(window.location.href);
       alert("Link copied to clipboard!");
-      console.log("✅ [ProductPageContent] Link copied to clipboard");
     }
   };
 
   const handleWishlist = () => {
     setIsWishlisted(!isWishlisted);
-    console.log("❤️ [ProductPageContent] Wishlist toggled:", !isWishlisted);
     // TODO: Implement wishlist persistence
   };
 
@@ -170,11 +145,6 @@ export default function ProductPageContent({ product }) {
       : []),
     { name: product.name, href: "#" },
   ];
-
-  console.log(
-    "🍞 [ProductPageContent] Breadcrumbs:",
-    breadcrumbs.map((b) => b.name),
-  );
 
   // Check stock status
   const isLowStock =
@@ -357,10 +327,6 @@ export default function ProductPageContent({ product }) {
                       key={size}
                       onClick={() => {
                         setSelectedSize(size);
-                        console.log(
-                          "👕 [ProductPageContent] Size selected:",
-                          size,
-                        );
                       }}
                       className={`px-4 py-3 rounded-lg text-sm font-semibold transition-all ${
                         selectedSize === size
@@ -386,10 +352,6 @@ export default function ProductPageContent({ product }) {
                     onClick={() => {
                       const newQty = Math.max(1, quantity - 1);
                       setQuantity(newQty);
-                      console.log(
-                        "➖ [ProductPageContent] Quantity decreased:",
-                        newQty,
-                      );
                     }}
                     className="p-3 hover:bg-taupe/10 transition-colors disabled:opacity-50"
                     disabled={quantity <= 1}
@@ -402,10 +364,6 @@ export default function ProductPageContent({ product }) {
                     onClick={() => {
                       const newQty = Math.min(maxQuantity, quantity + 1);
                       setQuantity(newQty);
-                      console.log(
-                        "➕ [ProductPageContent] Quantity increased:",
-                        newQty,
-                      );
                     }}
                     className="p-3 hover:bg-taupe/10 transition-colors disabled:opacity-50"
                     disabled={quantity >= maxQuantity}
@@ -601,8 +559,6 @@ export default function ProductPageContent({ product }) {
 
 // Size Guide Modal Component
 function SizeGuideModal({ onClose }) {
-  console.log("📏 [SizeGuideModal] Opened");
-
   return (
     <motion.div
       initial={{ opacity: 0 }}

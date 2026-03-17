@@ -19,11 +19,6 @@ export async function generateStaticParams() {
     slug: product.slug,
   }));
 
-  console.log("🔧 [generateStaticParams] Generated params:", {
-    totalProducts: products.length,
-    slugs: params.map((p) => p.slug),
-  });
-
   return params;
 }
 
@@ -43,7 +38,7 @@ export async function generateMetadata({ params }) {
   }
 
   // Convert price from kobo to NGN for display
-  const priceInNGN = product.price;
+  const priceInNGN = Math.round(product.price / 100);
 
   return {
     title: `${product.name} | Topevekreation Luxury Fashion`,
@@ -108,22 +103,12 @@ export default async function ProductPage({ params }) {
   const resolvedParams = await params;
   const { data: product, error } = await getProductBySlug(resolvedParams.slug);
 
-  console.log("🔍 [ProductPage] Product search result:", {
-    searchSlug: resolvedParams.slug,
-    found: !!product,
-    productId: product?.id,
-    productName: product?.name,
-  });
-
   if (error || !product) {
-    console.error("❌ [ProductPage] Product not found:", error);
     notFound();
   }
 
-  console.log("✅ [ProductPage] Rendering product:", product.name);
-
-  // Convert price from kobo to NGN for structured data
-  const priceInNGN = product.price;
+  // Convert price from kobo to NGN for structured data and display
+  const priceInNGN = Math.round(product.price / 100);
 
   // Generate JSON-LD structured data for SEO
   const structuredData = {
@@ -194,8 +179,6 @@ export default async function ProductPage({ params }) {
       },
     ],
   };
-
-  console.log("📊 [ProductPage] Structured data generated for:", product.name);
 
   return (
     <>

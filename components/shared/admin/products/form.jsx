@@ -194,7 +194,6 @@ export default function ProductForm({
     e.preventDefault();
 
     if (!validate()) {
-      console.log("❌ Form validation failed");
       return;
     }
 
