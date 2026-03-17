@@ -48,7 +48,7 @@ export default function ProductPageContent({ product }) {
         product.id,
         product.category,
         product.tags || [],
-        4
+        4,
       );
 
       if (!error && data) {
@@ -131,11 +131,11 @@ export default function ProductPageContent({ product }) {
       try {
         await navigator.share({
           title: product.name,
-          text: `Check out ${product.name} on Topeve`,
+          text: `Check out ${product.name} on Topevekreation`,
           url: window.location.href,
         });
         console.log(
-          "✅ [ProductPageContent] Shared successfully via Web Share API"
+          "✅ [ProductPageContent] Shared successfully via Web Share API",
         );
       } catch (err) {
         console.log("⚠️ [ProductPageContent] Share cancelled or failed:", err);
@@ -173,7 +173,7 @@ export default function ProductPageContent({ product }) {
 
   console.log(
     "🍞 [ProductPageContent] Breadcrumbs:",
-    breadcrumbs.map((b) => b.name)
+    breadcrumbs.map((b) => b.name),
   );
 
   // Check stock status
@@ -182,8 +182,8 @@ export default function ProductPageContent({ product }) {
   const stockMessage = !product.in_stock
     ? "Out of Stock"
     : isLowStock
-    ? `Only ${product.stock_quantity} left in stock`
-    : "In Stock - Ready to Ship";
+      ? `Only ${product.stock_quantity} left in stock`
+      : "In Stock - Ready to Ship";
 
   // Calculate max quantity based on stock
   const maxQuantity = product.stock_quantity || 10;
@@ -300,34 +300,35 @@ export default function ProductPageContent({ product }) {
                           product.color === "mocha"
                             ? "#5B3A2E"
                             : product.color === "beige"
-                            ? "#F5F5DC"
-                            : product.color === "ivory"
-                            ? "#FFFFF0"
-                            : product.color === "dusty-rose"
-                            ? "#DCAE96"
-                            : product.color === "gold"
-                            ? "#D4AF7F"
-                            : product.color === "navy"
-                            ? "#000080"
-                            : product.color === "blue"
-                            ? "#0000FF"
-                            : product.color === "emerald"
-                            ? "#50C878"
-                            : product.color === "amber"
-                            ? "#FFBF00"
-                            : product.color === "nude"
-                            ? "#E3BC9A"
-                            : product.color === "mint"
-                            ? "#98D8C8"
-                            : product.color === "brown"
-                            ? "#8B4513"
-                            : product.color === "black"
-                            ? "#222222"
-                            : product.color === "white"
-                            ? "#FFFFFF"
-                            : product.color === "clear"
-                            ? "#F0F0F0"
-                            : product.color,
+                              ? "#F5F5DC"
+                              : product.color === "ivory"
+                                ? "#FFFFF0"
+                                : product.color === "dusty-rose"
+                                  ? "#DCAE96"
+                                  : product.color === "gold"
+                                    ? "#D4AF7F"
+                                    : product.color === "navy"
+                                      ? "#000080"
+                                      : product.color === "blue"
+                                        ? "#0000FF"
+                                        : product.color === "emerald"
+                                          ? "#50C878"
+                                          : product.color === "amber"
+                                            ? "#FFBF00"
+                                            : product.color === "nude"
+                                              ? "#E3BC9A"
+                                              : product.color === "mint"
+                                                ? "#98D8C8"
+                                                : product.color === "brown"
+                                                  ? "#8B4513"
+                                                  : product.color === "black"
+                                                    ? "#222222"
+                                                    : product.color === "white"
+                                                      ? "#FFFFFF"
+                                                      : product.color ===
+                                                          "clear"
+                                                        ? "#F0F0F0"
+                                                        : product.color,
                       }}
                     />
                   </div>
@@ -358,7 +359,7 @@ export default function ProductPageContent({ product }) {
                         setSelectedSize(size);
                         console.log(
                           "👕 [ProductPageContent] Size selected:",
-                          size
+                          size,
                         );
                       }}
                       className={`px-4 py-3 rounded-lg text-sm font-semibold transition-all ${
@@ -387,7 +388,7 @@ export default function ProductPageContent({ product }) {
                       setQuantity(newQty);
                       console.log(
                         "➖ [ProductPageContent] Quantity decreased:",
-                        newQty
+                        newQty,
                       );
                     }}
                     className="p-3 hover:bg-taupe/10 transition-colors disabled:opacity-50"
@@ -403,7 +404,7 @@ export default function ProductPageContent({ product }) {
                       setQuantity(newQty);
                       console.log(
                         "➕ [ProductPageContent] Quantity increased:",
-                        newQty
+                        newQty,
                       );
                     }}
                     className="p-3 hover:bg-taupe/10 transition-colors disabled:opacity-50"
@@ -418,8 +419,8 @@ export default function ProductPageContent({ product }) {
                     !product.in_stock
                       ? "text-red-500"
                       : isLowStock
-                      ? "text-orange-500"
-                      : "text-green-600"
+                        ? "text-orange-500"
+                        : "text-green-600"
                   }`}
                 >
                   {stockMessage}
@@ -438,8 +439,8 @@ export default function ProductPageContent({ product }) {
                   !product.in_stock
                     ? "bg-charcoal/20 text-charcoal/50 cursor-not-allowed"
                     : isAdded
-                    ? "bg-green-500 text-white"
-                    : "bg-brand text-cream hover:bg-gold hover:text-brand"
+                      ? "bg-green-500 text-white"
+                      : "bg-brand text-cream hover:bg-gold hover:text-brand"
                 } disabled:opacity-70 disabled:cursor-not-allowed`}
               >
                 <AnimatePresence mode="wait">

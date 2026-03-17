@@ -22,9 +22,9 @@ const montserrat = Montserrat({
 });
 
 export const metadata = {
-  title: "Topeve — Modern Luxury",
+  title: "Topevekreation — Modern Luxury",
   description:
-    "Topeve — refined fashion and beauty curated for everyday luxury.",
+    "Topevekreation — refined fashion and beauty curated for everyday luxury.",
 };
 
 export default function RootLayout({ children }) {

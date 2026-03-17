@@ -24,7 +24,7 @@ const MOCK_REVIEWS = [
     date: "2025-10-10",
     title: "Premium quality",
     content:
-      "This is my third purchase from Topeve and they never disappoint. The attention to detail is remarkable.",
+      "This is my third purchase from Topevekreation and they never disappoint. The attention to detail is remarkable.",
     verified: true,
     helpful: 18,
   },

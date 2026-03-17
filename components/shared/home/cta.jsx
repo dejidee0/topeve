@@ -19,7 +19,7 @@ const CTA = () => {
 
           {/* Title */}
           <h3 className="font-heading text-2xl sm:text-3xl md:text-4xl text-cream leading-tight">
-            Join the Topeve Edit
+            Join the Topevekreation Edit
           </h3>
 
           {/* Description */}

@@ -65,7 +65,7 @@ export default function AboutContent() {
       year: "2024",
       title: "The Beginning",
       description:
-        "Topeve was born from a vision to transform Nigeria's luxury fashion landscape.",
+        "Topevekreation was born from a vision to transform Nigeria's luxury fashion landscape.",
     },
     {
       year: "Q2 2024",
@@ -130,7 +130,7 @@ export default function AboutContent() {
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-gold/20 rounded-full mb-6">
                 <Users size={18} className="text-brand" />
                 <span className="text-sm font-semibold text-brand">
-                  About Topeve
+                  About Topevekreation
                 </span>
               </div>
 
@@ -143,10 +143,10 @@ export default function AboutContent() {
               </h1>
 
               <p className="text-lg md:text-xl text-charcoal/70 mb-8 leading-relaxed">
-                At Topeve, we believe luxury should be accessible, authentic,
-                and extraordinary. We're not just an e-commerce platform—we're
-                your gateway to the world's finest fashion, delivered to your
-                doorstep with Nigerian warmth.
+                At Topevekreation, we believe luxury should be accessible,
+                authentic, and extraordinary. We're not just an e-commerce
+                platform—we're your gateway to the world's finest fashion,
+                delivered to your doorstep with Nigerian warmth.
               </p>
 
               <div className="flex flex-wrap gap-4">
@@ -286,20 +286,20 @@ export default function AboutContent() {
               </h3>
               <div className="space-y-4 text-cream/90 leading-relaxed">
                 <p>
-                  Topeve was founded on a simple yet powerful belief: Nigerian
-                  fashion enthusiasts deserve access to the world's finest
-                  luxury brands without compromise.
+                  Topevekreation was founded on a simple yet powerful belief:
+                  Nigerian fashion enthusiasts deserve access to the world's
+                  finest luxury brands without compromise.
                 </p>
                 <p>
                   We saw a gap in the market—authentic luxury fashion was either
                   unavailable or difficult to access. We set out to change that.
                 </p>
                 <p>
-                  Today, Topeve stands as Nigeria's premier destination for
-                  verified luxury fashion, combining global standards with local
-                  understanding. Every product we offer is carefully curated,
-                  every customer interaction is personalized, and every delivery
-                  is an experience.
+                  Today, Topevekreation stands as Nigeria's premier destination
+                  for verified luxury fashion, combining global standards with
+                  local understanding. Every product we offer is carefully
+                  curated, every customer interaction is personalized, and every
+                  delivery is an experience.
                 </p>
                 <p className="text-gold font-semibold pt-4">
                   We're not just selling fashion—we're building a community of
@@ -492,7 +492,7 @@ export default function AboutContent() {
             className="text-center mb-16"
           >
             <h2 className="font-heading text-4xl md:text-5xl text-brand mb-4">
-              Why Choose Topeve
+              Why Choose Topevekreation
             </h2>
             <p className="text-lg text-charcoal/70 max-w-2xl mx-auto">
               Experience the difference of shopping with Nigeria's premier
@@ -560,8 +560,8 @@ export default function AboutContent() {
                 <span className="text-gold">True Luxury?</span>
               </h2>
               <p className="text-xl text-cream/90 mb-8 leading-relaxed">
-                Join thousands of satisfied customers who trust Topeve for their
-                luxury fashion needs. Start your journey today.
+                Join thousands of satisfied customers who trust Topevekreation
+                for their luxury fashion needs. Start your journey today.
               </p>
 
               <div className="flex flex-wrap gap-4">

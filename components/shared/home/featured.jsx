@@ -111,7 +111,7 @@ const Featured = ({ products = [] }) => {
                   <div className="relative w-full aspect-[4/5]">
                     <Image
                       src={product.image}
-                      alt={`${product.name} - ${product.category} from Topeve luxury collection`}
+                      alt={`${product.name} - ${product.category} from Topevekreation luxury collection`}
                       fill
                       sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                       className="object-cover group-hover:scale-110 transition-transform duration-700"
@@ -143,8 +143,8 @@ const Featured = ({ products = [] }) => {
                       !product.in_stock
                         ? "Product out of stock"
                         : product.size?.length > 0
-                        ? "Select size on product page"
-                        : `Add ${product.name} to cart`
+                          ? "Select size on product page"
+                          : `Add ${product.name} to cart`
                     }
                     className={`absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-md transition-all duration-300 z-10 ${
                       product.in_stock

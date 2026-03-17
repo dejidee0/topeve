@@ -241,7 +241,7 @@ export default function ProductTabs({ product }) {
                 </p>
                 <p className="pt-2">
                   To initiate a return, please contact our customer service team
-                  at returns@topeve.com
+                  at returns@topevekreation.com
                 </p>
               </div>
             </div>

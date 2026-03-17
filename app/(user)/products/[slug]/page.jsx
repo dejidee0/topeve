@@ -35,10 +35,10 @@ export async function generateMetadata({ params }) {
   if (error || !product) {
     console.warn(
       "⚠️ [generateMetadata] Product not found for slug:",
-      resolvedParams.slug
+      resolvedParams.slug,
     );
     return {
-      title: "Product Not Found | Topeve",
+      title: "Product Not Found | Topevekreation",
     };
   }
 
@@ -46,7 +46,7 @@ export async function generateMetadata({ params }) {
   const priceInNGN = product.price;
 
   return {
-    title: `${product.name} | Topeve Luxury Fashion`,
+    title: `${product.name} | Topevekreation Luxury Fashion`,
     description: `Shop ${product.name} - ${product.material} ${
       product.category
     }. Premium quality, ethically sourced. Price: ₦${priceInNGN.toLocaleString()}`,
@@ -56,16 +56,16 @@ export async function generateMetadata({ params }) {
       product.subcategory,
       product.material,
       "luxury fashion",
-      "topeve",
+      "topevekreation",
       ...(product.tags || []),
     ].filter(Boolean),
     openGraph: {
-      title: `${product.name} | Topeve`,
+      title: `${product.name} | Topevekreation`,
       description: `Premium ${product.material} ${
         product.category
       }. Shop now at ₦${priceInNGN.toLocaleString()}`,
-      url: `https://topeve.com/products/${product.slug}`,
-      siteName: "Topeve Luxury Fashion",
+      url: `https://topevekreation.com/products/${product.slug}`,
+      siteName: "Topevekreation Luxury Fashion",
       images: [
         {
           url: product.image,
@@ -79,16 +79,16 @@ export async function generateMetadata({ params }) {
     },
     twitter: {
       card: "summary_large_image",
-      title: `${product.name} | Topeve`,
+      title: `${product.name} | Topevekreation`,
       description: `Premium ${product.material} ${
         product.category
       }. Shop now at ₦${priceInNGN.toLocaleString()}`,
       images: [product.image],
-      creator: "@topeve",
-      site: "@topeve",
+      creator: "@topevekreation",
+      site: "@topevekreation",
     },
     alternates: {
-      canonical: `https://topeve.com/products/${product.slug}`,
+      canonical: `https://topevekreation.com/products/${product.slug}`,
     },
     robots: {
       index: true,
@@ -137,11 +137,11 @@ export default async function ProductPage({ params }) {
     mpn: product.id,
     brand: {
       "@type": "Brand",
-      name: "Topeve",
+      name: "Topevekreation",
     },
     offers: {
       "@type": "Offer",
-      url: `https://topeve.com/products/${product.slug}`,
+      url: `https://topevekreation.com/products/${product.slug}`,
       priceCurrency: product.currency || "NGN",
       price: priceInNGN,
       priceValidUntil: "2025-12-31",
@@ -151,7 +151,7 @@ export default async function ProductPage({ params }) {
         : "https://schema.org/OutOfStock",
       seller: {
         "@type": "Organization",
-        name: "Topeve",
+        name: "Topevekreation",
       },
     },
     aggregateRating: {

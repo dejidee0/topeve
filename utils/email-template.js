@@ -24,7 +24,7 @@ export function generateOrderEmailHTML(order, orderItems) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Order Confirmation - Topeve</title>
+  <title>Order Confirmation - Topevekreation</title>
   <style>
     body { font-family: 'Arial', sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f4f4f4; }
     .container { max-width: 600px; margin: 20px auto; background: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
@@ -77,7 +77,7 @@ export function generateOrderEmailHTML(order, orderItems) {
         <div class="info-row">
           <span class="info-label">Order Date:</span>
           <span class="info-value">${new Date(
-            order.created_at
+            order.created_at,
           ).toLocaleDateString("en-NG", {
             year: "numeric",
             month: "long",
@@ -110,7 +110,7 @@ export function generateOrderEmailHTML(order, orderItems) {
             </div>
             <div class="item-price">${formatPrice(item.total_price)}</div>
           </div>
-        `
+        `,
           )
           .join("")}
       </div>
@@ -184,9 +184,9 @@ export function generateOrderEmailHTML(order, orderItems) {
 
     <!-- Footer -->
     <div class="footer">
-      <p style="margin: 0 0 10px 0;">Need help? Contact us at support@topeve.com</p>
+      <p style="margin: 0 0 10px 0;">Need help? Contact us at support@topevekreation.com</p>
       <p style="margin: 0; color: #999;">
-        © ${new Date().getFullYear()} Topeve. All rights reserved.<br>
+        © ${new Date().getFullYear()} Topevekreation. All rights reserved.<br>
         Luxury Fashion • Lagos, Nigeria
       </p>
     </div>
@@ -251,7 +251,7 @@ export function generateAdminNotificationHTML(order, orderItems) {
           order.order_number
         }</td></tr>
         <tr><td><strong>Order Date:</strong></td><td>${new Date(
-          order.created_at
+          order.created_at,
         ).toLocaleString("en-NG")}</td></tr>
         <tr><td><strong>Payment Status:</strong></td><td style="color: #22c55e; font-weight: bold;">PAID</td></tr>
         <tr><td><strong>Payment Method:</strong></td><td>Paystack</td></tr>
@@ -305,7 +305,7 @@ export function generateAdminNotificationHTML(order, orderItems) {
               <td>${item.quantity}</td>
               <td>${formatPrice(item.total_price)}</td>
             </tr>
-          `
+          `,
             )
             .join("")}
         </tbody>
@@ -316,7 +316,7 @@ export function generateAdminNotificationHTML(order, orderItems) {
       <div class="section-title">Order Summary</div>
       <table>
         <tr><td>Subtotal:</td><td style="text-align: right;">${formatPrice(
-          order.subtotal
+          order.subtotal,
         )}</td></tr>
         <tr><td>Shipping:</td><td style="text-align: right;">${
           order.shipping_fee === 0 ? "FREE" : formatPrice(order.shipping_fee)
@@ -324,12 +324,12 @@ export function generateAdminNotificationHTML(order, orderItems) {
         ${
           order.tax > 0
             ? `<tr><td>Tax:</td><td style="text-align: right;">${formatPrice(
-                order.tax
+                order.tax,
               )}</td></tr>`
             : ""
         }
         <tr><td colspan="2" class="total">TOTAL: ${formatPrice(
-          order.total
+          order.total,
         )}</td></tr>
       </table>
     </div>

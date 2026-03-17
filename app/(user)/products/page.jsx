@@ -7,12 +7,12 @@ import ProductsLoadingSkeleton from "./skeleton";
 export const revalidate = 3600; // Revalidate every hour (ISR)
 
 export const metadata = {
-  title: "Shop All Products | Topeve",
+  title: "Shop All Products | Topevekreation",
   description:
     "Discover our curated collection of luxury fashion, beauty products, accessories, and jewelry. Premium quality for the discerning Nigerian shopper.",
   openGraph: {
     type: "website",
-    title: "Shop All Products | Topeve",
+    title: "Shop All Products | Topevekreation",
     description:
       "Discover our curated collection of luxury fashion, beauty products, accessories, and jewelry.",
   },

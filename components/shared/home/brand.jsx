@@ -40,10 +40,10 @@ const Brand = () => {
             Craft, Consciousness & Care
           </h3>
           <p className="text-lg text-charcoal/80 leading-relaxed">
-            Topeve selects pieces for quality, sustainability and timelessness.
-            We partner with ateliers and makers who value craft and ethical
-            production. Each drop is curated to be worn, treasured and passed
-            on.
+            Topevekreation selects pieces for quality, sustainability and
+            timelessness. We partner with ateliers and makers who value craft
+            and ethical production. Each drop is curated to be worn, treasured
+            and passed on.
           </p>
 
           <div className="flex gap-4 pt-4">

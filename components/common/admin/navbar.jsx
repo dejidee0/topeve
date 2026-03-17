@@ -38,10 +38,10 @@ export default function AdminHeader({
             <RiMenuLine className="text-2xl text-charcoal-900" />
           </button>
 
-          {/* Topeve Logo - Visible on Mobile */}
+          {/* Topevekreation Logo - Visible on Mobile */}
           <Link href="/" className="lg:hidden flex items-center gap-2">
             <span className="font-playfair font-bold text-xl text-charcoal-900">
-              Topeve
+              Topevekreation
             </span>
           </Link>
 

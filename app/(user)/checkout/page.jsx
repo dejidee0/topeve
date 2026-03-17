@@ -4,7 +4,7 @@ import CheckoutPageContent from "./content";
 import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "Checkout | Topeve",
+  title: "Checkout | Topevekreation",
   description: "Complete your purchase securely with our encrypted checkout.",
 };
 export const dynamic = "force-dynamic";

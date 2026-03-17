@@ -56,7 +56,7 @@ export default function SignUpPage() {
 
       if (error) clearError();
     },
-    [error, clearError, calculatePasswordStrength]
+    [error, clearError, calculatePasswordStrength],
   );
 
   const validateForm = useCallback(() => {
@@ -144,7 +144,7 @@ export default function SignUpPage() {
         handleSubmit();
       }
     },
-    [loading, isSubmitting]
+    [loading, isSubmitting],
   );
 
   const fadeIn = {
@@ -154,12 +154,12 @@ export default function SignUpPage() {
 
   const strengthColors = useMemo(
     () => ["", "bg-red-500", "bg-orange-500", "bg-yellow-500", "bg-green-500"],
-    []
+    [],
   );
 
   const strengthLabels = useMemo(
     () => ["", "Weak", "Fair", "Good", "Strong"],
-    []
+    [],
   );
 
   const benefits = useMemo(
@@ -169,7 +169,7 @@ export default function SignUpPage() {
       "Personalized style recommendations",
       "Priority customer support",
     ],
-    []
+    [],
   );
 
   return (
@@ -196,13 +196,15 @@ export default function SignUpPage() {
                 {/* Logo & Title */}
                 <motion.div variants={fadeIn} className="text-center mb-8">
                   <Link href="/" className="inline-block mb-4">
-                    <h1 className="font-heading text-4xl text-brand">Topeve</h1>
+                    <h1 className="font-heading text-4xl text-brand">
+                      Topevekreation
+                    </h1>
                   </Link>
                   <h2 className="font-heading text-3xl text-brand mb-2">
                     Create Account
                   </h2>
                   <p className="text-charcoal/70">
-                    Join the Topeve community today
+                    Join the Topevekreation community today
                   </p>
                 </motion.div>
 
@@ -440,7 +442,7 @@ export default function SignUpPage() {
                       htmlFor="terms"
                       className="text-sm text-charcoal/70 leading-relaxed cursor-pointer"
                     >
-                      I agree to Topeve&apos;s{" "}
+                      I agree to Topevekreation&apos;s{" "}
                       <Link
                         href="/terms"
                         className="text-brand hover:text-gold transition-colors font-medium"
@@ -563,7 +565,7 @@ export default function SignUpPage() {
                             size={16}
                             className="text-gold mt-0.5 flex-shrink-0"
                           />
-                          <span>Start shopping at Topeve</span>
+                          <span>Start shopping at Topevekreation</span>
                         </li>
                       </ul>
                     </div>

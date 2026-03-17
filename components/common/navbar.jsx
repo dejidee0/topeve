@@ -146,7 +146,7 @@ export default function Navbar() {
             href="/"
             className="font-heading text-2xl text-brand tracking-tight hover:text-gold transition-colors"
           >
-            Topeve
+            TopeveKreation
           </Link>
 
           {/* Right - Icons */}

@@ -12,9 +12,9 @@ export const revalidate = 3600; // Revalidate every hour
 
 // Metadata
 export const metadata = {
-  title: "Topeve - Luxury Fashion & Premium Ready-to-Wear | Nigeria",
+  title: "Topevekreation - Luxury Fashion & Premium Ready-to-Wear | Nigeria",
   description:
-    "Discover Topeve's exclusive collection of luxury fashion, bridal wear, beauty products, and premium accessories. Shop handcrafted pieces designed for the modern Nigerian woman. Free shipping on orders over ₦50,000.",
+    "Discover Topevekreation's exclusive collection of luxury fashion, bridal wear, beauty products, and premium accessories. Shop handcrafted pieces designed for the modern Nigerian woman. Free shipping on orders over ₦50,000.",
   keywords: [
     "luxury fashion Nigeria",
     "bridal shower collection",
@@ -25,27 +25,27 @@ export const metadata = {
     "bridal collection Nigeria",
     "premium beauty products",
     "high-end fashion",
-    "topeve fashion",
+    "topevekreation fashion",
   ],
   openGraph: {
-    title: "Topeve - Luxury Fashion & Premium Ready-to-Wear",
+    title: "Topevekreation - Luxury Fashion & Premium Ready-to-Wear",
     description:
       "Shop exclusive luxury fashion, bridal collections, and premium accessories. Handcrafted pieces for the discerning Nigerian shopper.",
-    url: "https://topeve.com",
-    siteName: "Topeve",
+    url: "https://topevekreation.com",
+    siteName: "Topevekreation",
     images: [
       {
         url: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80",
         width: 1200,
         height: 630,
-        alt: "Topeve Luxury Fashion",
+        alt: "Topevekreation Luxury Fashion",
       },
     ],
     locale: "en_NG",
     type: "website",
   },
   alternates: {
-    canonical: "https://topeve.com",
+    canonical: "https://topevekreation.com",
   },
   robots: {
     index: true,
@@ -64,21 +64,21 @@ export const metadata = {
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "Topeve",
-  url: "https://topeve.com",
+  name: "Topevekreation",
+  url: "https://topevekreation.com",
   description:
     "Luxury fashion e-commerce platform featuring premium ready-to-wear, bridal collections, beauty products, and accessories in Nigeria.",
   potentialAction: {
     "@type": "SearchAction",
-    target: "https://topeve.com/products?search={search_term_string}",
+    target: "https://topevekreation.com/products?search={search_term_string}",
     "query-input": "required name=search_term_string",
   },
   publisher: {
     "@type": "Organization",
-    name: "Topeve",
+    name: "Topevekreation",
     logo: {
       "@type": "ImageObject",
-      url: "https://topeve.com/logo.png",
+      url: "https://topevekreation.com/logo.png",
     },
   },
 };

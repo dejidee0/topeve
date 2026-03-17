@@ -12,7 +12,7 @@ export async function POST(request) {
 
     console.log(
       "📧 [EmailAPI] Processing email notification for order:",
-      order.order_number
+      order.order_number,
     );
 
     // Create transporter with Gmail - Latest Configuration
@@ -39,11 +39,11 @@ export async function POST(request) {
     // Send email to customer
     console.log(
       "📧 [EmailAPI] Sending customer email to:",
-      order.customer_email
+      order.customer_email,
     );
     const customerEmail = await transporter.sendMail({
       from: {
-        name: "Topeve",
+        name: "Topevekreation",
         address: process.env.GMAIL_USER,
       },
       to: order.customer_email,
@@ -61,7 +61,7 @@ export async function POST(request) {
 
     const adminEmailResult = await transporter.sendMail({
       from: {
-        name: "Topeve Orders",
+        name: "Topevekreation Orders",
         address: process.env.GMAIL_USER,
       },
       to: adminEmail,
@@ -89,7 +89,7 @@ export async function POST(request) {
         error: error.message,
         details: error.code || "Unknown error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

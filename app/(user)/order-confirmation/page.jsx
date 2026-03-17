@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import OrderConfirmationContent from "./content";
 
 export const metadata = {
-  title: "Order Confirmation | Topeve",
+  title: "Order Confirmation | Topevekreation",
   description: "Thank you for your order!",
 };
 

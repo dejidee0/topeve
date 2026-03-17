@@ -84,7 +84,7 @@ export default function AdminSidebar({
                   className="flex flex-col"
                 >
                   <span className="font-playfair font-bold text-xl text-charcoal-900">
-                    Topeve
+                    Topevekreation
                   </span>
                   <span className="text-xs text-taupe-600">Admin Panel</span>
                 </motion.div>
@@ -191,7 +191,7 @@ export default function AdminSidebar({
                     Admin User
                   </p>
                   <p className="text-xs text-taupe-600 truncate">
-                    admin@topeve.com
+                    admin@topevekreation.com
                   </p>
                 </motion.div>
               )}
@@ -231,7 +231,7 @@ export default function AdminSidebar({
                     className="flex flex-col"
                   >
                     <span className="font-playfair font-bold text-xl text-charcoal-900">
-                      Topeve
+                      Topevekreation
                     </span>
                     <span className="text-xs text-taupe-600">Admin Panel</span>
                   </motion.div>
@@ -323,7 +323,7 @@ export default function AdminSidebar({
                       Admin User
                     </p>
                     <p className="text-xs text-taupe-600 truncate">
-                      admin@topeve.com
+                      admin@topevekreation.com
                     </p>
                   </motion.div>
                 </div>

@@ -2,8 +2,8 @@
 import DashboardContent from "./content";
 
 export const metadata = {
-  title: "Dashboard - Topeve Admin",
-  description: "Overview of your Topeve store performance",
+  title: "Dashboard - Topevekreation Admin",
+  description: "Overview of your Topevekreation store performance",
 };
 
 export default function AdminDashboardPage() {

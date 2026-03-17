@@ -2,7 +2,7 @@
 import { Suspense } from "react";
 import ResetPasswordContent from "./content";
 export const metadata = {
-  title: "Reset Password | Topeve",
+  title: "Reset Password | Topevekreation",
 };
 
 export default function ResetPasswordPage() {

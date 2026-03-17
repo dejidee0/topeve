@@ -1,8 +1,8 @@
 import AdminLayoutClient from "./admin-layout-client";
 import "../globals.css";
 export const metadata = {
-  title: "Admin Dashboard - Topeve",
-  description: "Manage your Topeve luxury fashion e-commerce store",
+  title: "Admin Dashboard - Topevekreation",
+  description: "Manage your Topevekreation luxury fashion e-commerce store",
 };
 
 export default function AdminLayout({ children }) {

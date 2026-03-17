@@ -1,7 +1,7 @@
 import CustomersPageContent from "./content";
 
 export const metadata = {
-  title: "Customers - Topeve Admin",
+  title: "Customers - Topevekreation Admin",
   description: "Manage customer information and track customer activity",
 };
 

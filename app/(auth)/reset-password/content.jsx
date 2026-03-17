@@ -175,7 +175,9 @@ export default function ResetPasswordPage() {
             {/* Logo & Title */}
             <motion.div variants={fadeIn} className="text-center mb-10">
               <Link href="/" className="inline-block mb-6">
-                <h1 className="font-heading text-4xl text-brand">Topeve</h1>
+                <h1 className="font-heading text-4xl text-brand">
+                  Topevekreation
+                </h1>
               </Link>
               <h2 className="font-heading text-3xl text-brand mb-3">
                 Create New Password
@@ -379,7 +381,7 @@ export default function ResetPasswordPage() {
           <div className="absolute inset-0 bg-gradient-to-br from-brand/90 to-gold/80" />
           <Image
             src="https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=1200&q=80"
-            alt="Topeve Fashion"
+            alt="Topevekreation Fashion"
             fill
             className="object-cover mix-blend-overlay"
           />
@@ -398,8 +400,8 @@ export default function ResetPasswordPage() {
                 Account
               </h3>
               <p className="text-lg text-white/90 leading-relaxed max-w-md mb-12">
-                Create a strong password to keep your Topeve account safe and
-                secure.
+                Create a strong password to keep your Topevekreation account
+                safe and secure.
               </p>
 
               {/* Security Tips */}

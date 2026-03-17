@@ -72,7 +72,9 @@ export default function ForgotPasswordPage() {
                 {/* Logo & Title */}
                 <motion.div variants={fadeIn} className="text-center mb-10">
                   <Link href="/" className="inline-block mb-6">
-                    <h1 className="font-heading text-4xl text-brand">Topeve</h1>
+                    <h1 className="font-heading text-4xl text-brand">
+                      Topevekreation
+                    </h1>
                   </Link>
                   <h2 className="font-heading text-3xl text-brand mb-3">
                     Forgot Password?
@@ -288,7 +290,7 @@ export default function ForgotPasswordPage() {
           <div className="absolute inset-0 bg-gradient-to-br from-brand/90 to-gold/80" />
           <Image
             src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=1200&q=80"
-            alt="Topeve Fashion"
+            alt="Topevekreation Fashion"
             fill
             className="object-cover mix-blend-overlay"
           />

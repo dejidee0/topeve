@@ -4,7 +4,7 @@ import AccountPageContent from "./content";
 import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "My Account | Topeve",
+  title: "My Account | Topevekreation",
   description: "Manage your account and view order history",
 };
 

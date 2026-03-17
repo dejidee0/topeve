@@ -1,7 +1,7 @@
 import ProductsPageContent from "./content";
 
 export const metadata = {
-  title: "Products - Topeve Admin",
+  title: "Products - Topevekreation Admin",
   description: "Manage your product inventory",
 };
 

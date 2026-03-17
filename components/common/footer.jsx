@@ -105,11 +105,12 @@ export default function Footer() {
         {/* Contact Info */}
         <div className="flex flex-col sm:flex-row items-center gap-3">
           <span className="flex items-center gap-2">
-            <Mail size={14} />Topevekreation@gmail.com
+            <Mail size={14} />
+            Topevekreation@gmail.com
           </span>
           <span className="hidden sm:inline text-taupe/50">|</span>
           <span className="flex items-center gap-2">
-            <Phone size={14} /> +234 8163268646, +234 9034724519
+            <Phone size={14} /> +234 816 326 8646 , +234 903 472 4519
           </span>
           <span className="hidden sm:inline text-taupe/50">|</span>
           <span className="flex items-center gap-2">

@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import CartPageContent from "./content";
 
 export const metadata = {
-  title: "Shopping Cart | Topeve",
+  title: "Shopping Cart | Topevekreation",
   description: "Review and manage your shopping cart items before checkout.",
 };
 

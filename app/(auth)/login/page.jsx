@@ -37,7 +37,7 @@ export default function SignInPage() {
     setIsSubmitting(false);
 
     if (result.success) {
-      showNotification("Welcome back to Topeve!", "success");
+      showNotification("Welcome back to Topevekreation!", "success");
       router.push("/");
     } else {
       showNotification(result.error || "Sign in failed", "error");
@@ -79,7 +79,7 @@ export default function SignInPage() {
             <motion.div variants={fadeIn} className="text-center mb-10">
               <Link href="/" className="inline-block mb-6">
                 <h1 className="font-heading text-4xl text-brand tracking-tight hover:text-gold transition-colors">
-                  Topeve
+                  Topevekreation
                 </h1>
               </Link>
               <h2 className="font-heading text-3xl text-brand mb-2">
@@ -226,7 +226,7 @@ export default function SignInPage() {
         >
           <Image
             src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=80"
-            alt="Topeve Fashion"
+            alt="Topevekreation Fashion"
             fill
             className="object-cover"
           />
@@ -245,7 +245,7 @@ export default function SignInPage() {
                 Curated for You
               </h3>
               <p className="text-xl text-white/90 leading-relaxed max-w-md">
-                Join thousands of style enthusiasts who trust Topeve for
+                Join thousands of style enthusiasts who trust Topevekreation for
                 premium, sustainable fashion pieces.
               </p>
 
