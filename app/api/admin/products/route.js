@@ -1,6 +1,29 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { createClient as createSessionClient } from "@/supabase/server";
+
+// Columns the admin product form is allowed to write
+const PRODUCT_FIELDS = [
+  "name",
+  "slug",
+  "category",
+  "subcategory",
+  "price",
+  "currency",
+  "color",
+  "size",
+  "material",
+  "tags",
+  "image",
+  "description",
+  "in_stock",
+  "sku",
+  "stock_quantity",
+  "low_stock_threshold",
+  "meta_title",
+  "meta_description",
+];
 
 function getAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -13,18 +36,53 @@ function getAdminClient() {
   });
 }
 
+// Returns an error response unless the caller is a signed-in admin
+async function requireAdmin(supabase) {
+  const sessionClient = await createSessionClient();
+  const {
+    data: { user },
+  } = await sessionClient.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { data: customer } = await supabase
+    .from("customers")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (customer?.role !== "admin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  return null;
+}
+
+function pickProductFields(body) {
+  return Object.fromEntries(
+    Object.entries(body).filter(([key]) => PRODUCT_FIELDS.includes(key))
+  );
+}
+
 // Storefront pages are ISR-cached; purge them so admin changes show immediately
-function revalidateStorefront() {
+function revalidateStorefront(...slugs) {
   revalidatePath("/");
   revalidatePath("/products");
-  revalidatePath("/products/[slug]", "page");
+  for (const slug of new Set(slugs.filter(Boolean))) {
+    revalidatePath(`/products/${slug}`);
+  }
 }
 
 // POST /api/admin/products — Create a product
 export async function POST(request) {
   try {
     const supabase = getAdminClient();
-    const body = await request.json();
+    const denied = await requireAdmin(supabase);
+    if (denied) return denied;
+
+    const body = pickProductFields(await request.json());
 
     const { data, error } = await supabase
       .from("products")
@@ -37,7 +95,7 @@ export async function POST(request) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    revalidateStorefront();
+    revalidateStorefront(data.slug);
     return NextResponse.json({ data }, { status: 201 });
   } catch (err) {
     console.error("❌ [API] Create product exception:", err);
@@ -49,12 +107,22 @@ export async function POST(request) {
 export async function PATCH(request) {
   try {
     const supabase = getAdminClient();
-    const body = await request.json();
-    const { id, ...updates } = body;
+    const denied = await requireAdmin(supabase);
+    if (denied) return denied;
+
+    const { id, ...rest } = await request.json();
+    const updates = pickProductFields(rest);
 
     if (!id) {
       return NextResponse.json({ error: "Missing product ID" }, { status: 400 });
     }
+
+    // Previous slug, so its page is purged if the slug changes
+    const { data: existing } = await supabase
+      .from("products")
+      .select("slug")
+      .eq("id", id)
+      .single();
 
     const { data, error } = await supabase
       .from("products")
@@ -68,7 +136,7 @@ export async function PATCH(request) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    revalidateStorefront();
+    revalidateStorefront(existing?.slug, data.slug);
     return NextResponse.json({ data });
   } catch (err) {
     console.error("❌ [API] Update product exception:", err);
@@ -80,6 +148,9 @@ export async function PATCH(request) {
 export async function DELETE(request) {
   try {
     const supabase = getAdminClient();
+    const denied = await requireAdmin(supabase);
+    if (denied) return denied;
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
 
@@ -87,17 +158,18 @@ export async function DELETE(request) {
       return NextResponse.json({ error: "Missing product ID" }, { status: 400 });
     }
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("products")
       .update({ deleted_at: new Date().toISOString() })
-      .eq("id", id);
+      .eq("id", id)
+      .select("slug");
 
     if (error) {
       console.error("❌ [API] Delete product error:", error);
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    revalidateStorefront();
+    revalidateStorefront(...data.map((p) => p.slug));
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("❌ [API] Delete product exception:", err);
