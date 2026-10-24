@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 function getAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -10,6 +11,13 @@ function getAdminClient() {
   return createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
+}
+
+// Storefront pages are ISR-cached; purge them so admin changes show immediately
+function revalidateStorefront() {
+  revalidatePath("/");
+  revalidatePath("/products");
+  revalidatePath("/products/[slug]", "page");
 }
 
 // POST /api/admin/products — Create a product
@@ -29,6 +37,7 @@ export async function POST(request) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
+    revalidateStorefront();
     return NextResponse.json({ data }, { status: 201 });
   } catch (err) {
     console.error("❌ [API] Create product exception:", err);
@@ -59,6 +68,7 @@ export async function PATCH(request) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
+    revalidateStorefront();
     return NextResponse.json({ data });
   } catch (err) {
     console.error("❌ [API] Update product exception:", err);
@@ -87,6 +97,7 @@ export async function DELETE(request) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
+    revalidateStorefront();
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error("❌ [API] Delete product exception:", err);
